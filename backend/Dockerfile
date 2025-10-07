@@ -39,4 +39,5 @@ COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 EXPOSE 4000
 
 # Run migrations and start the application
-CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed && node dist/main"]
+# Seed is optional - continue even if it fails
+CMD ["sh", "-c", "npx prisma migrate deploy && (npx prisma db seed || true) && node dist/src/main"]
