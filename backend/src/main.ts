@@ -10,6 +10,10 @@ async function bootstrap() {
     origin: [
       'http://localhost:3000',
       'http://localhost:8000',
+      'http://localhost:80',
+      'http://localhost',
+      'https://dashboard.codershq.ae',
+      'https://codershq.ae',
       process.env.FRONTEND_URL,
     ].filter(Boolean),
     credentials: true,
