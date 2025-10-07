@@ -1,0 +1,49 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.production
+
+# Dependencies
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Database
+*.db
+*.db-journal
+prisma/dev.db
+prisma/dev.db-journal
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Docker volumes
+postgres_data/
+redis_data/
+
+# Test coverage
+coverage/
+
+# Misc
+.cache/
+*.bak
+*.tmp

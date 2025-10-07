@@ -1,0 +1,26 @@
+node_modules
+# Keep environment variables out of version control
+.env
+.env.local
+.env.*.local
+
+/generated/prisma
+
+# compiled output
+/dist
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+
+# Tests
+/coverage
+
+# IDEs
+/.idea
+.vscode/*
+*.sublime-workspace

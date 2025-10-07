@@ -1,0 +1,123 @@
+// CHQ Space Management Platform - Prisma Schema
+// This schema defines the database structure for the Coders HQ Space Management Platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// User model - handles both community members and admins
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String?   // Nullable for OAuth users
+  firstName     String?
+  lastName      String?
+  name          String?   // Combined name for OAuth
+  phoneNumber   String?
+  entity        String?   // Organization/Company
+  jobTitle      String?
+  role          Role      @default(USER)
+  googleId      String?   @unique // For Google OAuth
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  bookings      Booking[]
+
+  @@map("users")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+// Space model - represents the three physical spaces at CHQ
+model Space {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  capacity    Int
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  bookings    Booking[]
+
+  @@map("spaces")
+}
+
+// Booking model - represents booking requests and approved bookings
+model Booking {
+  id                String        @id @default(cuid())
+
+  // Requester information
+  requesterId       String
+  requester         User          @relation(fields: [requesterId], references: [id], onDelete: Cascade)
+  firstName         String
+  lastName          String
+  email             String
+  phoneNumber       String
+  entity            String        // Organization/Company
+  jobTitle          String
+
+  // Space and timing
+  spaceId           String
+  space             Space         @relation(fields: [spaceId], references: [id], onDelete: Restrict)
+  eventName         String
+  startDate         DateTime      // Start date and time in UTC
+  endDate           DateTime      // End date and time in UTC
+
+  // Event details
+  attendees         Int
+  seating           Seating
+  agenda            String
+
+  // Services/Requirements (stored as array)
+  valet             Boolean       @default(false)
+  catering          Boolean       @default(false)
+  photography       Boolean       @default(false)
+  itSupport         Boolean       @default(false)
+  screensDisplay    Boolean       @default(false)
+
+  comments          String?
+
+  // Booking status and visibility
+  status            BookingStatus @default(PENDING)
+  visibility        Visibility    @default(PUBLIC)
+
+  // Admin fields
+  adminComment      String?
+  reviewedBy        String?       // Admin user ID who reviewed
+  reviewedAt        DateTime?
+
+  // Metadata
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  @@map("bookings")
+  @@index([spaceId, startDate, endDate]) // For overlap checking
+  @@index([status])
+  @@index([requesterId])
+}
+
+enum Seating {
+  THEATRE
+  WORKSHOP
+  CLASSROOM
+  USHAPE
+}
+
+enum BookingStatus {
+  PENDING
+  APPROVED
+  DENIED
+  EDIT_REQUESTED
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+  INTERNAL
+}

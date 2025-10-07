@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHQ Space Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+  <div id="navigation"></div>
+
+  <main class="max-w-7xl mx-auto px-4 py-12">
+    <!-- Hero Section -->
+    <section class="text-center py-20">
+      <h1 class="text-5xl font-bold mb-4 text-gray-900">
+        Welcome to CHQ Space Management
+      </h1>
+      <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+        Book and manage spaces at Coders HQ. Choose from our co-working space,
+        lecture room, or meeting room for your next event.
+      </p>
+      <div class="flex gap-4 justify-center">
+        <a href="/booking-form.html" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-lg">
+          Book a Space
+        </a>
+        <a href="/calendar.html" class="bg-gray-200 hover:bg-gray-300 text-gray-900 px-6 py-3 rounded-lg text-lg">
+          View Calendar
+        </a>
+      </div>
+    </section>
+
+    <!-- Spaces Section -->
+    <section class="py-12">
+      <h2 class="text-3xl font-bold text-center mb-8 text-gray-900">Our Spaces</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow">
+          <h3 class="text-xl font-bold mb-2">Co-working Space</h3>
+          <p class="text-gray-600 mb-4">Capacity: 20 people</p>
+          <p class="text-sm text-gray-500">
+            2 tables with 10 seats each - Perfect for collaborative work and team meetings.
+          </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow">
+          <h3 class="text-xl font-bold mb-2">Lecture Room</h3>
+          <p class="text-gray-600 mb-4">Capacity: 40 people</p>
+          <p class="text-sm text-gray-500">
+            Ideal for talks, training sessions, workshops, and larger gatherings.
+          </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow">
+          <h3 class="text-xl font-bold mb-2">Meeting Room</h3>
+          <p class="text-gray-600 mb-4">Capacity: 10 people</p>
+          <p class="text-sm text-gray-500">
+            Perfect for small group meetings, mentoring sessions, and focused discussions.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it Works -->
+    <section class="py-12">
+      <h2 class="text-3xl font-bold text-center mb-8 text-gray-900">How It Works</h2>
+      <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        <div class="text-center">
+          <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+            1
+          </div>
+          <h3 class="font-semibold mb-2 text-gray-900">Submit Request</h3>
+          <p class="text-sm text-gray-600">
+            Fill out the booking form with your event details
+          </p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+            2
+          </div>
+          <h3 class="font-semibold mb-2 text-gray-900">Admin Review</h3>
+          <p class="text-sm text-gray-600">
+            Our team reviews your request and responds within 24-48 hours
+          </p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+            3
+          </div>
+          <h3 class="font-semibold mb-2 text-gray-900">Get Confirmed</h3>
+          <p class="text-sm text-gray-600">
+            Receive confirmation and access details for your event
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t py-8 mt-20">
+    <div class="max-w-7xl mx-auto px-4 text-center text-gray-600">
+      <p>&copy; 2025 Coders HQ. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="/js/config.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/navigation.js"></script>
+</body>
+</html>
