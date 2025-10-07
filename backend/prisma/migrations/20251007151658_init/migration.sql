@@ -1,6 +1,18 @@
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN');
+
+-- CreateEnum
+CREATE TYPE "Seating" AS ENUM ('THEATRE', 'WORKSHOP', 'CLASSROOM', 'USHAPE');
+
+-- CreateEnum
+CREATE TYPE "BookingStatus" AS ENUM ('PENDING', 'APPROVED', 'DENIED', 'EDIT_REQUESTED');
+
+-- CreateEnum
+CREATE TYPE "Visibility" AS ENUM ('PUBLIC', 'PRIVATE', 'INTERNAL');
+
 -- CreateTable
 CREATE TABLE "users" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT,
     "firstName" TEXT,
@@ -9,25 +21,29 @@ CREATE TABLE "users" (
     "phoneNumber" TEXT,
     "entity" TEXT,
     "jobTitle" TEXT,
-    "role" TEXT NOT NULL DEFAULT 'USER',
+    "role" "Role" NOT NULL DEFAULT 'USER',
     "googleId" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "spaces" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "capacity" INTEGER NOT NULL,
     "description" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "spaces_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "bookings" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "requesterId" TEXT NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
@@ -37,10 +53,10 @@ CREATE TABLE "bookings" (
     "jobTitle" TEXT NOT NULL,
     "spaceId" TEXT NOT NULL,
     "eventName" TEXT NOT NULL,
-    "startDate" DATETIME NOT NULL,
-    "endDate" DATETIME NOT NULL,
+    "startDate" TIMESTAMP(3) NOT NULL,
+    "endDate" TIMESTAMP(3) NOT NULL,
     "attendees" INTEGER NOT NULL,
-    "seating" TEXT NOT NULL,
+    "seating" "Seating" NOT NULL,
     "agenda" TEXT NOT NULL,
     "valet" BOOLEAN NOT NULL DEFAULT false,
     "catering" BOOLEAN NOT NULL DEFAULT false,
@@ -48,15 +64,15 @@ CREATE TABLE "bookings" (
     "itSupport" BOOLEAN NOT NULL DEFAULT false,
     "screensDisplay" BOOLEAN NOT NULL DEFAULT false,
     "comments" TEXT,
-    "status" TEXT NOT NULL DEFAULT 'PENDING',
-    "visibility" TEXT NOT NULL DEFAULT 'PUBLIC',
+    "status" "BookingStatus" NOT NULL DEFAULT 'PENDING',
+    "visibility" "Visibility" NOT NULL DEFAULT 'PUBLIC',
     "adminComment" TEXT,
     "reviewedBy" TEXT,
-    "reviewedAt" DATETIME,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "bookings_requesterId_fkey" FOREIGN KEY ("requesterId") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT "bookings_spaceId_fkey" FOREIGN KEY ("spaceId") REFERENCES "spaces" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    "reviewedAt" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "bookings_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -76,3 +92,10 @@ CREATE INDEX "bookings_status_idx" ON "bookings"("status");
 
 -- CreateIndex
 CREATE INDEX "bookings_requesterId_idx" ON "bookings"("requesterId");
+
+-- AddForeignKey
+ALTER TABLE "bookings" ADD CONSTRAINT "bookings_requesterId_fkey" FOREIGN KEY ("requesterId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "bookings" ADD CONSTRAINT "bookings_spaceId_fkey" FOREIGN KEY ("spaceId") REFERENCES "spaces"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+

@@ -1,7 +1,7 @@
 // API Configuration
 // Auto-detect environment based on hostname
 const API_URL = window.location.hostname === 'dashboard.codershq.ae'
-  ? 'https://api.dashboard.codershq.ae/api'
+  ? 'https://api-dashboard.codershq.ae/api'
   : 'http://localhost:4000/api';
 
 // Storage keys

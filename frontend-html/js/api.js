@@ -11,6 +11,7 @@ const API = {
         ...(token && { 'Authorization': `Bearer ${token}` }),
         ...options.headers
       },
+      credentials: 'include',
       ...options
     };
 
