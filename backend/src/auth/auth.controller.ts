@@ -20,7 +20,14 @@ export class AuthController {
   @Public()
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto);
+    console.log('🔐 Login attempt:', {
+      email: loginDto.email,
+      timestamp: new Date().toISOString(),
+      headers: 'Check CORS'
+    });
+    const result = await this.authService.login(loginDto);
+    console.log('✅ Login successful for:', loginDto.email);
+    return result;
   }
 
   @Public()

@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { EmailService } from '../email/email.service';
 import { BookingStatus, Visibility, Seating } from '@prisma/client';
 import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
 import { CreateInternalEventDto } from './dto/create-internal-event.dto';
@@ -10,6 +11,7 @@ export class AdminService {
   constructor(
     private prisma: PrismaService,
     private bookingsService: BookingsService,
+    private emailService: EmailService,
   ) {}
 
   async getAllBookings(
@@ -102,7 +104,9 @@ export class AdminService {
       },
     });
 
-    // TODO: Send email notification to user
+    // Send approval email to user
+    await this.emailService.sendBookingApprovedEmail(updated);
+
     return updated;
   }
 
@@ -123,7 +127,9 @@ export class AdminService {
       },
     });
 
-    // TODO: Send email notification to user
+    // Send denial email to user
+    await this.emailService.sendBookingDeniedEmail(updated);
+
     return updated;
   }
 
@@ -148,7 +154,9 @@ export class AdminService {
       },
     });
 
-    // TODO: Send email notification to user
+    // Send edit request email to user
+    await this.emailService.sendEditRequestedEmail(updated);
+
     return updated;
   }
 

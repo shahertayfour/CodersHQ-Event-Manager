@@ -5,12 +5,16 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { EmailService } from '../email/email.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
-import { BookingStatus, Visibility } from '@prisma/client';
+import { BookingStatus, Visibility, Role } from '@prisma/client';
 
 @Injectable()
 export class BookingsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private emailService: EmailService,
+  ) {}
 
   async create(userId: string, createBookingDto: CreateBookingDto) {
     const startDate = new Date(createBookingDto.startDate);
@@ -81,7 +85,22 @@ export class BookingsService {
       },
     });
 
-    // TODO: Trigger email notification to admins
+    // Send confirmation email to user
+    await this.emailService.sendBookingReceivedEmail(booking);
+
+    // Send notification to admins
+    const admins = await this.prisma.user.findMany({
+      where: { role: Role.ADMIN },
+      select: { email: true },
+    });
+    const adminEmails = admins.map((admin) => admin.email);
+    if (adminEmails.length > 0) {
+      await this.emailService.sendNewBookingNotificationToAdmins(
+        booking,
+        adminEmails,
+      );
+    }
+
     return booking;
   }
 
