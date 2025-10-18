@@ -3,10 +3,12 @@ import {
   ConflictException,
   NotFoundException,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { EmailService } from '../email/email.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
+import { UpdateBookingDto } from './dto/update-booking.dto';
 import { BookingStatus, Visibility, Role } from '@prisma/client';
 
 @Injectable()
@@ -235,5 +237,115 @@ export class BookingsService {
         visibility: booking.visibility,
       };
     });
+  }
+
+  async update(id: string, userId: string, updateBookingDto: UpdateBookingDto) {
+    // Find the booking first
+    const booking = await this.prisma.booking.findUnique({
+      where: { id },
+      include: { space: true },
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    // Check ownership
+    if (booking.requesterId !== userId) {
+      throw new ForbiddenException('You can only update your own bookings');
+    }
+
+    // Only allow updates if booking is PENDING or EDIT_REQUESTED
+    if (booking.status !== BookingStatus.PENDING && booking.status !== BookingStatus.EDIT_REQUESTED) {
+      throw new BadRequestException('Cannot update a booking that has been approved or denied');
+    }
+
+    const startDate = new Date(updateBookingDto.startDate);
+    const endDate = new Date(updateBookingDto.endDate);
+
+    // Validate dates
+    if (startDate >= endDate) {
+      throw new BadRequestException('Start date must be before end date');
+    }
+
+    if (startDate < new Date()) {
+      throw new BadRequestException('Cannot book in the past');
+    }
+
+    // Check for overlapping bookings (excluding this booking)
+    await this.checkOverlap(updateBookingDto.spaceId, startDate, endDate, id);
+
+    // Verify space exists
+    const space = await this.prisma.space.findUnique({
+      where: { id: updateBookingDto.spaceId },
+    });
+
+    if (!space) {
+      throw new NotFoundException('Space not found');
+    }
+
+    // Check capacity
+    if (updateBookingDto.attendees > space.capacity) {
+      throw new BadRequestException(
+        `Number of attendees (${updateBookingDto.attendees}) exceeds space capacity (${space.capacity})`,
+      );
+    }
+
+    // Update the booking and reset to PENDING status
+    const updated = await this.prisma.booking.update({
+      where: { id },
+      data: {
+        firstName: updateBookingDto.firstName,
+        lastName: updateBookingDto.lastName,
+        email: updateBookingDto.email,
+        phoneNumber: updateBookingDto.phoneNumber,
+        entity: updateBookingDto.entity,
+        jobTitle: updateBookingDto.jobTitle,
+        spaceId: updateBookingDto.spaceId,
+        eventName: updateBookingDto.eventName,
+        startDate,
+        endDate,
+        attendees: updateBookingDto.attendees,
+        seating: updateBookingDto.seating,
+        agenda: updateBookingDto.agenda,
+        valet: updateBookingDto.valet || false,
+        catering: updateBookingDto.catering || false,
+        photography: updateBookingDto.photography || false,
+        itSupport: updateBookingDto.itSupport || false,
+        screensDisplay: updateBookingDto.screensDisplay || false,
+        comments: updateBookingDto.comments,
+        visibility: updateBookingDto.visibility || Visibility.PUBLIC,
+        status: BookingStatus.PENDING, // Reset to pending after update
+        adminComment: null, // Clear previous admin comment
+        reviewedBy: null,
+        reviewedAt: null,
+      },
+      include: {
+        space: true,
+        requester: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+
+    // Send updated booking notification to admins
+    const admins = await this.prisma.user.findMany({
+      where: { role: Role.ADMIN },
+      select: { email: true },
+    });
+    const adminEmails = admins.map((admin) => admin.email);
+    if (adminEmails.length > 0) {
+      await this.emailService.sendBookingUpdatedNotification(
+        updated,
+        adminEmails,
+      );
+    }
+
+    return updated;
   }
 }

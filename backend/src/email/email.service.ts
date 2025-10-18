@@ -1,20 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as sgMail from '@sendgrid/mail';
+import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class EmailService {
+  private transporter: nodemailer.Transporter;
+
   constructor(private configService: ConfigService) {
-    const apiKey = this.configService.get<string>('SENDGRID_API_KEY');
-    if (apiKey) {
-      sgMail.setApiKey(apiKey);
+    const gmailUser = this.configService.get<string>('GMAIL_USER');
+    const gmailAppPassword = this.configService.get<string>('GMAIL_APP_PASSWORD');
+
+    if (gmailUser && gmailAppPassword) {
+      this.transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: gmailUser,
+          pass: gmailAppPassword,
+        },
+      });
+      console.log('✅ Email service configured with Gmail');
+    } else {
+      console.warn('⚠️  Gmail credentials not configured - emails will not be sent');
     }
   }
 
   async sendBookingReceivedEmail(booking: any) {
-    const msg = {
+    if (!this.transporter) {
+      console.warn('Email not sent - transporter not configured');
+      return;
+    }
+
+    const mailOptions = {
+      from: `"Coders HQ" <${this.configService.get<string>('GMAIL_USER')}>`,
       to: booking.email,
-      from: this.configService.get<string>('SENDGRID_FROM_EMAIL') || 'noreply@codershq.ae',
       subject: 'Booking Received - CHQ Space Management',
       html: `
         <h2>Booking Request Received</h2>
@@ -34,16 +52,22 @@ export class EmailService {
     };
 
     try {
-      await sgMail.send(msg);
+      await this.transporter.sendMail(mailOptions);
+      console.log(`📧 Booking confirmation sent to ${booking.email}`);
     } catch (error) {
       console.error('Error sending email:', error);
     }
   }
 
   async sendNewBookingNotificationToAdmins(booking: any, adminEmails: string[]) {
-    const msg = {
-      to: adminEmails,
-      from: this.configService.get<string>('SENDGRID_FROM_EMAIL') || 'noreply@codershq.ae',
+    if (!this.transporter) {
+      console.warn('Email not sent - transporter not configured');
+      return;
+    }
+
+    const mailOptions = {
+      from: `"Coders HQ" <${this.configService.get<string>('GMAIL_USER')}>`,
+      to: adminEmails.join(', '),
       subject: `New Booking Request - ${booking.space.name}`,
       html: `
         <h2>New Booking Request</h2>
@@ -69,16 +93,22 @@ export class EmailService {
     };
 
     try {
-      await sgMail.send(msg);
+      await this.transporter.sendMail(mailOptions);
+      console.log(`📧 Admin notification sent to ${adminEmails.length} admin(s)`);
     } catch (error) {
       console.error('Error sending admin notification:', error);
     }
   }
 
   async sendBookingApprovedEmail(booking: any) {
-    const msg = {
+    if (!this.transporter) {
+      console.warn('Email not sent - transporter not configured');
+      return;
+    }
+
+    const mailOptions = {
+      from: `"Coders HQ" <${this.configService.get<string>('GMAIL_USER')}>`,
       to: booking.email,
-      from: this.configService.get<string>('SENDGRID_FROM_EMAIL') || 'noreply@codershq.ae',
       subject: `Booking Approved - ${booking.space.name}`,
       html: `
         <h2>Booking Approved!</h2>
@@ -99,16 +129,22 @@ export class EmailService {
     };
 
     try {
-      await sgMail.send(msg);
+      await this.transporter.sendMail(mailOptions);
+      console.log(`📧 Approval email sent to ${booking.email}`);
     } catch (error) {
       console.error('Error sending approval email:', error);
     }
   }
 
   async sendBookingDeniedEmail(booking: any) {
-    const msg = {
+    if (!this.transporter) {
+      console.warn('Email not sent - transporter not configured');
+      return;
+    }
+
+    const mailOptions = {
+      from: `"Coders HQ" <${this.configService.get<string>('GMAIL_USER')}>`,
       to: booking.email,
-      from: this.configService.get<string>('SENDGRID_FROM_EMAIL') || 'noreply@codershq.ae',
       subject: `Booking Request Denied - ${booking.space.name}`,
       html: `
         <h2>Booking Request Update</h2>
@@ -128,16 +164,22 @@ export class EmailService {
     };
 
     try {
-      await sgMail.send(msg);
+      await this.transporter.sendMail(mailOptions);
+      console.log(`📧 Denial email sent to ${booking.email}`);
     } catch (error) {
       console.error('Error sending denial email:', error);
     }
   }
 
   async sendEditRequestedEmail(booking: any) {
-    const msg = {
+    if (!this.transporter) {
+      console.warn('Email not sent - transporter not configured');
+      return;
+    }
+
+    const mailOptions = {
+      from: `"Coders HQ" <${this.configService.get<string>('GMAIL_USER')}>`,
       to: booking.email,
-      from: this.configService.get<string>('SENDGRID_FROM_EMAIL') || 'noreply@codershq.ae',
       subject: `Update Required - ${booking.space.name}`,
       html: `
         <h2>Booking Update Required</h2>
@@ -151,15 +193,57 @@ export class EmailService {
           <li><strong>End:</strong> ${new Date(booking.endDate).toLocaleString()}</li>
         </ul>
         <p><strong>Required Changes:</strong> ${booking.adminComment}</p>
-        <p>Please update your booking request or contact us for clarification.</p>
+        <p>Please log in to your dashboard and update your booking request.</p>
         <p>Best regards,<br>Coders HQ Team</p>
       `,
     };
 
     try {
-      await sgMail.send(msg);
+      await this.transporter.sendMail(mailOptions);
+      console.log(`📧 Edit request email sent to ${booking.email}`);
     } catch (error) {
       console.error('Error sending edit request email:', error);
+    }
+  }
+
+  async sendBookingUpdatedNotification(booking: any, adminEmails: string[]) {
+    if (!this.transporter) {
+      console.warn('Email not sent - transporter not configured');
+      return;
+    }
+
+    const mailOptions = {
+      from: `"Coders HQ" <${this.configService.get<string>('GMAIL_USER')}>`,
+      to: adminEmails.join(', '),
+      subject: `Booking Updated - ${booking.space.name}`,
+      html: `
+        <h2>Booking Updated</h2>
+        <p>A booking request has been updated and is pending review:</p>
+        <h3>Requester Information:</h3>
+        <ul>
+          <li><strong>Name:</strong> ${booking.firstName} ${booking.lastName}</li>
+          <li><strong>Email:</strong> ${booking.email}</li>
+          <li><strong>Phone:</strong> ${booking.phoneNumber}</li>
+          <li><strong>Organization:</strong> ${booking.entity}</li>
+        </ul>
+        <h3>Updated Booking Details:</h3>
+        <ul>
+          <li><strong>Event:</strong> ${booking.eventName}</li>
+          <li><strong>Space:</strong> ${booking.space.name}</li>
+          <li><strong>Start:</strong> ${new Date(booking.startDate).toLocaleString()}</li>
+          <li><strong>End:</strong> ${new Date(booking.endDate).toLocaleString()}</li>
+          <li><strong>Attendees:</strong> ${booking.attendees}</li>
+          <li><strong>Seating:</strong> ${booking.seating}</li>
+        </ul>
+        <p>Please review this updated request in the admin panel.</p>
+      `,
+    };
+
+    try {
+      await this.transporter.sendMail(mailOptions);
+      console.log(`📧 Booking updated notification sent to ${adminEmails.length} admin(s)`);
+    } catch (error) {
+      console.error('Error sending booking updated notification:', error);
     }
   }
 }

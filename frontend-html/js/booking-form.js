@@ -1,4 +1,6 @@
 // Booking form page logic
+let editingBookingId = null;
+
 document.addEventListener('DOMContentLoaded', async () => {
   // Require authentication
   if (!Auth.requireAuth()) return;
@@ -7,6 +9,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   const messageDiv = document.getElementById('message');
   const submitBtn = document.getElementById('submitBtn');
   const spaceSelect = document.getElementById('spaceId');
+
+  // Check if we're editing an existing booking
+  const urlParams = new URLSearchParams(window.location.search);
+  editingBookingId = urlParams.get('edit');
+
+  // Update page title if editing
+  if (editingBookingId) {
+    const title = document.querySelector('h1');
+    if (title) title.textContent = 'Edit Booking';
+    submitBtn.textContent = 'Update Booking';
+  }
 
   // Load available spaces
   try {
@@ -18,6 +31,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       option.textContent = `${space.name} (Capacity: ${space.capacity})`;
       spaceSelect.appendChild(option);
     });
+
+    // If editing, load the existing booking data
+    if (editingBookingId) {
+      await loadBookingData(editingBookingId, messageDiv);
+    }
   } catch (error) {
     Utils.showError(messageDiv, 'Failed to load spaces. Please refresh the page.');
   }
@@ -67,9 +85,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     Utils.showLoading(submitBtn);
 
     try {
-      await API.post(ENDPOINTS.BOOKINGS, formData);
-
-      Utils.showSuccess(messageDiv, 'Booking request submitted successfully! Redirecting to dashboard...');
+      if (editingBookingId) {
+        // Update existing booking
+        await API.request(`${ENDPOINTS.BOOKINGS}/${editingBookingId}`, {
+          method: 'PUT',
+          body: JSON.stringify(formData)
+        });
+        Utils.showSuccess(messageDiv, 'Booking updated successfully! Redirecting to dashboard...');
+      } else {
+        // Create new booking
+        await API.post(ENDPOINTS.BOOKINGS, formData);
+        Utils.showSuccess(messageDiv, 'Booking request submitted successfully! Redirecting to dashboard...');
+      }
 
       setTimeout(() => {
         window.location.href = '/dashboard.html';
@@ -80,3 +107,45 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 });
+
+async function loadBookingData(bookingId, messageDiv) {
+  try {
+    const booking = await API.get(`${ENDPOINTS.BOOKINGS}/${bookingId}`);
+
+    // Populate form fields
+    document.getElementById('eventName').value = booking.eventName || '';
+    document.getElementById('spaceId').value = booking.spaceId || '';
+    document.getElementById('attendees').value = booking.attendees || '';
+    document.getElementById('seating').value = booking.seating || 'THEATRE';
+    document.getElementById('agenda').value = booking.agenda || '';
+    document.getElementById('visibility').value = booking.visibility || 'PUBLIC';
+    document.getElementById('comments').value = booking.comments || '';
+
+    // Set date values (convert from ISO to datetime-local format)
+    if (booking.startDate) {
+      const start = new Date(booking.startDate);
+      document.getElementById('startDate').value = start.toISOString().slice(0, 16);
+    }
+    if (booking.endDate) {
+      const end = new Date(booking.endDate);
+      document.getElementById('endDate').value = end.toISOString().slice(0, 16);
+    }
+
+    // Set checkboxes
+    if (document.getElementById('valet')) document.getElementById('valet').checked = booking.valet || false;
+    if (document.getElementById('catering')) document.getElementById('catering').checked = booking.catering || false;
+    if (document.getElementById('photography')) document.getElementById('photography').checked = booking.photography || false;
+    if (document.getElementById('itSupport')) document.getElementById('itSupport').checked = booking.itSupport || false;
+    if (document.getElementById('screensDisplay')) document.getElementById('screensDisplay').checked = booking.screensDisplay || false;
+
+    // Show admin comment if exists
+    if (booking.adminComment) {
+      Utils.showWarning(messageDiv, `Admin Note: ${booking.adminComment}`);
+    }
+  } catch (error) {
+    Utils.showError(messageDiv, 'Failed to load booking data. Redirecting to dashboard...');
+    setTimeout(() => {
+      window.location.href = '/dashboard.html';
+    }, 2000);
+  }
+}

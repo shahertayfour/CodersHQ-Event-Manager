@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, Query } from '@nestjs/common';
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
+import { UpdateBookingDto } from './dto/update-booking.dto';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { Public } from '../common/decorators/public.decorator';
 
@@ -21,6 +22,15 @@ export class BookingsController {
   @Get(':id')
   findOne(@Param('id') id: string, @CurrentUser() user: any) {
     return this.bookingsService.findOne(id, user.id);
+  }
+
+  @Put(':id')
+  update(
+    @Param('id') id: string,
+    @CurrentUser() user: any,
+    @Body() updateBookingDto: UpdateBookingDto,
+  ) {
+    return this.bookingsService.update(id, user.id, updateBookingDto);
   }
 }
 

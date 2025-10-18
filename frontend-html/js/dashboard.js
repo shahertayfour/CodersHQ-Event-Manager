@@ -37,10 +37,15 @@ function openBookingDetails(bookingId) {
       ${booking.cateringRequired ? '<div>✓ Catering Required</div>' : ''}
       <div><strong>Visibility:</strong> ${Utils.formatStatus(booking.visibility)}</div>
       ${booking.comments ? `<div><strong>Comments:</strong> ${booking.comments}</div>` : ''}
-      ${booking.adminComment ? `<div class="bg-yellow-50 p-3 rounded"><strong>Admin Note:</strong> ${booking.adminComment}</div>` : ''}
+      ${booking.adminComment ? `<div class="bg-yellow-50 p-3 rounded border-l-4 border-yellow-400"><strong>Admin Note:</strong> ${booking.adminComment}</div>` : ''}
 
       ${booking.status === 'PENDING' || booking.status === 'EDIT_REQUESTED' ? `
         <div class="pt-4 border-t flex gap-2">
+          ${booking.status === 'EDIT_REQUESTED' ? `
+            <a href="/booking-form.html?edit=${booking.id}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded inline-block">
+              Edit Booking
+            </a>
+          ` : ''}
           <button onclick="deleteBooking('${booking.id}')" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
             Cancel Booking
           </button>
