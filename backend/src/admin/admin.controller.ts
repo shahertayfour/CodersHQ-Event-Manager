@@ -89,4 +89,13 @@ export class AdminController {
   getStats() {
     return this.adminService.getStats();
   }
+
+  @Get('users')
+  getAllUsers(
+    @Query('role') role?: Role,
+    @Query('emailVerified') emailVerified?: string,
+    @Query('search') search?: string,
+  ) {
+    return this.adminService.getAllUsers(role, emailVerified, search);
+  }
 }

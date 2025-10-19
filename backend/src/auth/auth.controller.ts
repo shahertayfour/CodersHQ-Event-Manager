@@ -3,6 +3,9 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { VerifyEmailDto } from './dto/verify-email.dto';
 import { Public } from '../common/decorators/public.decorator';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { AuthGuard } from '@nestjs/passport';
@@ -56,5 +59,30 @@ export class AuthController {
     @Body() updateProfileDto: UpdateProfileDto,
   ) {
     return this.authService.updateProfile(user.id, updateProfileDto);
+  }
+
+  // Password Reset Endpoints
+  @Public()
+  @Post('forgot-password')
+  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(forgotPasswordDto);
+  }
+
+  @Public()
+  @Post('reset-password')
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return this.authService.resetPassword(resetPasswordDto);
+  }
+
+  // Email Verification Endpoints
+  @Post('send-verification-email')
+  async sendVerificationEmail(@CurrentUser() user: any) {
+    return this.authService.sendVerificationEmail(user.id);
+  }
+
+  @Public()
+  @Post('verify-email')
+  async verifyEmail(@Body() verifyEmailDto: VerifyEmailDto) {
+    return this.authService.verifyEmail(verifyEmailDto);
   }
 }

@@ -16,6 +16,10 @@ const ENDPOINTS = {
   LOGIN: '/auth/login',
   REGISTER: '/auth/register',
   LOGOUT: '/auth/logout',
+  FORGOT_PASSWORD: '/auth/forgot-password',
+  RESET_PASSWORD: '/auth/reset-password',
+  VERIFY_EMAIL: '/auth/verify-email',
+  SEND_VERIFICATION_EMAIL: '/auth/send-verification-email',
   SPACES: '/spaces',
   BOOKINGS: '/bookings',
   BOOKINGS_ME: '/bookings/me',
@@ -24,5 +28,6 @@ const ENDPOINTS = {
   ADMIN_APPROVE: (id) => `/admin/bookings/${id}/approve`,
   ADMIN_DENY: (id) => `/admin/bookings/${id}/deny`,
   ADMIN_REQUEST_EDIT: (id) => `/admin/bookings/${id}/request-edit`,
-  ADMIN_STATS: '/admin/stats'
+  ADMIN_STATS: '/admin/stats',
+  ADMIN_USERS: '/admin/users'
 };

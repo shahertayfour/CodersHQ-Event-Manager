@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { EmailService } from '../email/email.service';
-import { BookingStatus, Visibility, Seating } from '@prisma/client';
+import { BookingStatus, Visibility, Seating, Role } from '@prisma/client';
 import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
 import { CreateInternalEventDto } from './dto/create-internal-event.dto';
 import { BookingsService } from '../bookings/bookings.service';
@@ -242,5 +242,54 @@ export class AdminService {
       deniedBookings,
       spaceUtilization,
     };
+  }
+
+  async getAllUsers(
+    role?: Role,
+    emailVerifiedStr?: string,
+    search?: string,
+  ) {
+    const emailVerified = emailVerifiedStr === 'true' ? true : emailVerifiedStr === 'false' ? false : undefined;
+
+    const where: any = {};
+
+    if (role) {
+      where.role = role;
+    }
+
+    if (emailVerified !== undefined) {
+      where.emailVerified = emailVerified;
+    }
+
+    if (search) {
+      where.OR = [
+        { email: { contains: search, mode: 'insensitive' } },
+        { firstName: { contains: search, mode: 'insensitive' } },
+        { lastName: { contains: search, mode: 'insensitive' } },
+        { entity: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    const users = await this.prisma.user.findMany({
+      where,
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        phoneNumber: true,
+        entity: true,
+        jobTitle: true,
+        role: true,
+        emailVerified: true,
+        createdAt: true,
+        _count: {
+          select: { bookings: true },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return users;
   }
 }

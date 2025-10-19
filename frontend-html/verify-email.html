@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Email - CHQ Space Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 text-center">
+      <div>
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          Email Verification
+        </h2>
+      </div>
+
+      <div id="message" class="mt-4"></div>
+
+      <div id="loading" class="flex justify-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+
+      <div class="mt-6">
+        <a href="/login.html" class="font-medium text-indigo-600 hover:text-indigo-500">
+          Go to login
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    const messageDiv = document.getElementById('message');
+    const loadingDiv = document.getElementById('loading');
+
+    // Get token from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+
+    async function verifyEmail() {
+      if (!token) {
+        loadingDiv.style.display = 'none';
+        Utils.showError(messageDiv, 'Invalid or missing verification token');
+        return;
+      }
+
+      try {
+        await API.request(ENDPOINTS.VERIFY_EMAIL, {
+          method: 'POST',
+          body: JSON.stringify({ token })
+        });
+
+        loadingDiv.style.display = 'none';
+        Utils.showSuccess(messageDiv,
+          'Email verified successfully! You can now log in to your account.'
+        );
+      } catch (error) {
+        loadingDiv.style.display = 'none';
+        Utils.showError(messageDiv,
+          error.message || 'Failed to verify email. The link may have expired.'
+        );
+      }
+    }
+
+    // Auto-verify on page load
+    verifyEmail();
+  </script>
+</body>
+</html>

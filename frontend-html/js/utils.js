@@ -53,6 +53,16 @@ const Utils = {
     `;
   },
 
+  // Show warning message
+  showWarning(container, message) {
+    container.innerHTML = `
+      <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-4">
+        <strong>⚠️ Admin Requested Changes:</strong><br>
+        ${message}
+      </div>
+    `;
+  },
+
   // Clear messages
   clearMessages(container) {
     container.innerHTML = '';

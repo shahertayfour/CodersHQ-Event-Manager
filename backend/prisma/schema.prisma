@@ -12,20 +12,30 @@ datasource db {
 
 // User model - handles both community members and admins
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  password      String?   // Nullable for OAuth users
-  firstName     String?
-  lastName      String?
-  name          String?   // Combined name for OAuth
-  phoneNumber   String?
-  entity        String?   // Organization/Company
-  jobTitle      String?
-  role          Role      @default(USER)
-  googleId      String?   @unique // For Google OAuth
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  bookings      Booking[]
+  id                    String    @id @default(cuid())
+  email                 String    @unique
+  password              String?   // Nullable for OAuth users
+  firstName             String?
+  lastName              String?
+  name                  String?   // Combined name for OAuth
+  phoneNumber           String?
+  entity                String?   // Organization/Company
+  jobTitle              String?
+  role                  Role      @default(USER)
+  googleId              String?   @unique // For Google OAuth
+
+  // Email verification fields
+  emailVerified         Boolean   @default(false)
+  emailVerificationToken String?  @unique
+  emailVerificationExpiry DateTime?
+
+  // Password reset fields
+  resetPasswordToken    String?   @unique
+  resetPasswordExpiry   DateTime?
+
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  bookings              Booking[]
 
   @@map("users")
 }

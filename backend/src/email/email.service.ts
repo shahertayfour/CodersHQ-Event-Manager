@@ -246,4 +246,74 @@ export class EmailService {
       console.error('Error sending booking updated notification:', error);
     }
   }
+
+  async sendPasswordResetEmail(user: any, resetToken: string) {
+    if (!this.transporter) {
+      console.warn('Email not sent - transporter not configured');
+      return;
+    }
+
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+    const resetLink = `${frontendUrl}/reset-password.html?token=${resetToken}`;
+
+    const mailOptions = {
+      from: `"Coders HQ" <${this.configService.get<string>('GMAIL_USER')}>`,
+      to: user.email,
+      subject: 'Password Reset Request - CHQ Space Management',
+      html: `
+        <h2>Password Reset Request</h2>
+        <p>Dear ${user.firstName || user.email},</p>
+        <p>We received a request to reset your password for your CHQ Space Management account.</p>
+        <p>Click the link below to reset your password:</p>
+        <p><a href="${resetLink}" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Reset Password</a></p>
+        <p>Or copy and paste this link into your browser:</p>
+        <p>${resetLink}</p>
+        <p><strong>This link will expire in 1 hour.</strong></p>
+        <p>If you did not request a password reset, please ignore this email or contact support if you have concerns.</p>
+        <p>Best regards,<br>Coders HQ Team</p>
+      `,
+    };
+
+    try {
+      await this.transporter.sendMail(mailOptions);
+      console.log(`📧 Password reset email sent to ${user.email}`);
+    } catch (error) {
+      console.error('Error sending password reset email:', error);
+    }
+  }
+
+  async sendEmailVerificationEmail(user: any, verificationToken: string) {
+    if (!this.transporter) {
+      console.warn('Email not sent - transporter not configured');
+      return;
+    }
+
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+    const verifyLink = `${frontendUrl}/verify-email.html?token=${verificationToken}`;
+
+    const mailOptions = {
+      from: `"Coders HQ" <${this.configService.get<string>('GMAIL_USER')}>`,
+      to: user.email,
+      subject: 'Verify Your Email - CHQ Space Management',
+      html: `
+        <h2>Welcome to CHQ Space Management!</h2>
+        <p>Dear ${user.firstName || user.email},</p>
+        <p>Thank you for registering with Coders HQ Space Management.</p>
+        <p>Please verify your email address by clicking the link below:</p>
+        <p><a href="${verifyLink}" style="display: inline-block; padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px;">Verify Email</a></p>
+        <p>Or copy and paste this link into your browser:</p>
+        <p>${verifyLink}</p>
+        <p><strong>This link will expire in 24 hours.</strong></p>
+        <p>If you did not create this account, please ignore this email.</p>
+        <p>Best regards,<br>Coders HQ Team</p>
+      `,
+    };
+
+    try {
+      await this.transporter.sendMail(mailOptions);
+      console.log(`📧 Email verification sent to ${user.email}`);
+    } catch (error) {
+      console.error('Error sending email verification:', error);
+    }
+  }
 }
