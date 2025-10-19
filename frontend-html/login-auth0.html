@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - CHQ Space Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
+</head>
+<body class="bg-gray-50">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <h1 class="text-xl font-bold text-gray-900">Coders HQ</h1>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="max-w-md mx-auto px-4 py-12">
+    <div class="bg-white rounded-lg shadow-md p-8">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+        <p class="text-gray-600">Sign in to manage your space bookings</p>
+      </div>
+
+      <!-- Error Message -->
+      <div id="error-message" class="hidden mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+        <p class="text-red-800 text-sm"></p>
+      </div>
+
+      <!-- Auth0 Login Button -->
+      <button
+        id="loginBtn"
+        onclick="handleLogin()"
+        class="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors font-medium mb-4"
+      >
+        <span id="loginBtnText">Continue with Auth0</span>
+        <span id="loginBtnLoading" class="hidden">
+          <svg class="animate-spin inline h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Signing in...
+        </span>
+      </button>
+
+      <div class="mt-6">
+        <div class="relative">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-300"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-2 bg-white text-gray-500">Secure authentication powered by Auth0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 text-center">
+        <p class="text-sm text-gray-600">
+          Don't have an account?
+          <button onclick="handleLogin()" class="text-indigo-600 hover:text-indigo-700 font-medium">
+            Sign up
+          </button>
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-4 text-center text-sm text-gray-500">
+      <a href="/calendar.html" class="hover:text-gray-700">View Public Calendar</a>
+    </div>
+  </main>
+
+  <script src="js/auth0-config.js"></script>
+  <script>
+    const loginBtn = document.getElementById('loginBtn');
+    const loginBtnText = document.getElementById('loginBtnText');
+    const loginBtnLoading = document.getElementById('loginBtnLoading');
+    const errorMessage = document.getElementById('error-message');
+
+    // Check for error in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const error = urlParams.get('error');
+    if (error) {
+      errorMessage.classList.remove('hidden');
+      errorMessage.querySelector('p').textContent = decodeURIComponent(error);
+    }
+
+    async function handleLogin() {
+      try {
+        // Show loading state
+        loginBtn.disabled = true;
+        loginBtnText.classList.add('hidden');
+        loginBtnLoading.classList.remove('hidden');
+
+        // Initialize and login
+        await initAuth0();
+        await auth0Login();
+
+      } catch (error) {
+        console.error('Login error:', error);
+
+        errorMessage.classList.remove('hidden');
+        errorMessage.querySelector('p').textContent = error.message || 'Failed to initiate login';
+
+        // Reset button state
+        loginBtn.disabled = false;
+        loginBtnText.classList.remove('hidden');
+        loginBtnLoading.classList.add('hidden');
+      }
+    }
+
+    // Check if already logged in
+    (async () => {
+      try {
+        const result = await initAuth0();
+
+        if (result && result.isAuthenticated) {
+          console.log('User already logged in, redirecting...');
+          window.location.href = '/dashboard.html';
+        }
+      } catch (error) {
+        console.error('Init error:', error);
+      }
+    })();
+  </script>
+</body>
+</html>
