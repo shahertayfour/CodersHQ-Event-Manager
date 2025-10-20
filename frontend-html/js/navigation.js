@@ -15,8 +15,8 @@ async function renderNavigation() {
     <nav class="nav">
       <div class="container" style="max-width: 1280px; padding: var(--space-4) var(--space-4);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <a href="/index.html" style="font-size: 1.125rem; font-weight: 600; color: var(--color-primary); text-decoration: none; letter-spacing: -0.02em;">
-            CHQ
+          <a href="/index.html" style="display: flex; align-items: center; text-decoration: none;">
+            <img src="/images/coders-hq-logo.png" alt="Coders HQ" style="height: 40px; width: auto;">
           </a>
 
           <div style="display: flex; align-items: center; gap: var(--space-8);" class="nav-menu">
