@@ -7,12 +7,25 @@ function closeModal() {
 }
 
 function openBookingDetails(bookingId) {
+  console.log('openBookingDetails called with ID:', bookingId);
+  console.log('All bookings:', allBookings);
+
   const booking = allBookings.find(b => b.id === bookingId);
-  if (!booking) return;
+  console.log('Found booking:', booking);
+
+  if (!booking) {
+    console.error('Booking not found!');
+    alert('Booking not found!');
+    return;
+  }
 
   const modal = document.getElementById('bookingModal');
   const title = document.getElementById('modalTitle');
   const content = document.getElementById('modalContent');
+
+  console.log('Modal element:', modal);
+  console.log('Title element:', title);
+  console.log('Content element:', content);
 
   title.textContent = booking.eventName;
 
@@ -108,7 +121,9 @@ function openBookingDetails(bookingId) {
     </div>
   `;
 
+  console.log('About to show modal...');
   modal.style.display = 'flex';
+  console.log('Modal display set to flex. Modal should be visible now.');
 }
 
 async function updateBookingStatus(bookingId, status) {
@@ -192,8 +207,8 @@ function renderBookings() {
   }
 
   bookingsList.innerHTML = filteredBookings.map(booking => `
-    <div class="card" style="cursor: pointer; transition: all var(--transition-base);" onclick="openBookingDetails('${booking.id}')" onmouseenter="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-md)'" onmouseleave="this.style.transform=''; this.style.boxShadow='var(--shadow-sm)'">
-      <div style="display: flex; justify-content: space-between; align-items: start;">
+    <div class="card booking-card" data-booking-id="${booking.id}" style="cursor: pointer; transition: all var(--transition-base); position: relative; z-index: 1;">
+      <div style="display: flex; justify-content: space-between; align-items: start; pointer-events: none;">
         <div style="flex: 1;">
           <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--color-text-primary); margin-bottom: var(--space-2);">${booking.eventName}</h3>
           <div style="display: flex; flex-direction: column; gap: var(--space-1); font-size: 0.875rem; color: var(--color-text-secondary);">
@@ -210,6 +225,25 @@ function renderBookings() {
       </div>
     </div>
   `).join('');
+
+  // Add click event listeners to all booking cards
+  console.log('Adding event listeners to', filteredBookings.length, 'booking cards');
+  document.querySelectorAll('.booking-card').forEach((card, index) => {
+    const bookingId = card.getAttribute('data-booking-id');
+    console.log('Adding listener to card', index, 'with ID', bookingId);
+    card.addEventListener('click', (e) => {
+      console.log('Card clicked!', bookingId);
+      openBookingDetails(bookingId);
+    });
+    card.addEventListener('mouseenter', function() {
+      this.style.transform = 'translateY(-2px)';
+      this.style.boxShadow = 'var(--shadow-md)';
+    });
+    card.addEventListener('mouseleave', function() {
+      this.style.transform = '';
+      this.style.boxShadow = 'var(--shadow-sm)';
+    });
+  });
 }
 
 async function loadBookings() {
