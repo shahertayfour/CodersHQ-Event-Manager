@@ -3,7 +3,7 @@ let allBookings = [];
 let currentFilter = 'ALL';
 
 function closeModal() {
-  document.getElementById('bookingModal').classList.add('hidden');
+  document.getElementById('bookingModal').style.display = 'none';
 }
 
 function openBookingDetails(bookingId) {
@@ -17,12 +17,12 @@ function openBookingDetails(bookingId) {
   title.textContent = booking.eventName;
 
   content.innerHTML = `
-    <div class="space-y-4">
+    <div style="display: flex; flex-direction: column; gap: var(--space-4);">
       <!-- Booking Details -->
-      <div class="space-y-2 text-sm">
-        <div class="flex items-center gap-2">
-          <span class="font-semibold">Status:</span>
-          <span class="px-2 py-1 rounded text-xs ${Utils.getStatusColor(booking.status)}">
+      <div style="display: flex; flex-direction: column; gap: var(--space-2); font-size: 0.875rem;">
+        <div style="display: flex; align-items: center; gap: var(--space-2);">
+          <span style="font-weight: 600;">Status:</span>
+          <span class="${Utils.getStatusBadgeClass(booking.status)}">
             ${Utils.formatStatus(booking.status)}
           </span>
         </div>
@@ -35,9 +35,9 @@ function openBookingDetails(bookingId) {
         <div><strong>Seating:</strong> ${Utils.formatStatus(booking.seating)}</div>
         <div><strong>Agenda:</strong> ${booking.agenda}</div>
 
-        <div class="pt-2">
+        <div style="padding-top: var(--space-2);">
           <strong>Technical Requirements:</strong>
-          <div class="ml-4">
+          <div style="margin-left: var(--space-4);">
             ${booking.projector ? '✓ Projector<br>' : ''}
             ${booking.whiteboard ? '✓ Whiteboard<br>' : ''}
             ${booking.videoConference ? '✓ Video Conference<br>' : ''}
@@ -49,42 +49,44 @@ function openBookingDetails(bookingId) {
 
         <div><strong>Visibility:</strong> ${Utils.formatStatus(booking.visibility)}</div>
         ${booking.comments ? `<div><strong>Comments:</strong> ${booking.comments}</div>` : ''}
-        ${booking.adminComment ? `<div class="bg-yellow-50 p-3 rounded"><strong>Previous Admin Note:</strong> ${booking.adminComment}</div>` : ''}
+        ${booking.adminComment ? `<div style="background: #fef3c7; padding: var(--space-3); border-radius: var(--radius-md);"><strong>Previous Admin Note:</strong> ${booking.adminComment}</div>` : ''}
       </div>
 
       <!-- Admin Actions -->
       ${booking.status === 'PENDING' || booking.status === 'EDIT_REQUESTED' ? `
-        <div class="pt-4 border-t">
-          <h3 class="font-semibold mb-3">Admin Actions</h3>
+        <div style="padding-top: var(--space-4); border-top: 1px solid var(--color-border);">
+          <h3 style="font-weight: 600; margin-bottom: var(--space-3);">Admin Actions</h3>
 
-          <div class="mb-3">
-            <label for="adminComment" class="block text-sm font-medium text-gray-700 mb-2">
+          <div style="margin-bottom: var(--space-3);">
+            <label for="adminComment" class="label">
               Admin Comment
             </label>
             <textarea
               id="adminComment"
               rows="3"
               placeholder="Optional note for the requester..."
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="input"
             >${booking.adminComment || ''}</textarea>
           </div>
 
-          <div class="flex gap-2">
+          <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
             <button
               onclick="updateBookingStatus('${booking.id}', 'APPROVED')"
-              class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+              class="btn"
+              style="background: #10b981; color: white;"
             >
               Approve
             </button>
             <button
               onclick="updateBookingStatus('${booking.id}', 'DENIED')"
-              class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+              class="btn"
+              style="background: var(--color-error); color: white;"
             >
               Deny
             </button>
             <button
               onclick="updateBookingStatus('${booking.id}', 'EDIT_REQUESTED')"
-              class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+              class="btn btn-accent"
             >
               Request Edit
             </button>
@@ -93,10 +95,11 @@ function openBookingDetails(bookingId) {
       ` : ''}
 
       ${booking.status !== 'PENDING' && booking.status !== 'EDIT_REQUESTED' ? `
-        <div class="pt-4 border-t">
+        <div style="padding-top: var(--space-4); border-top: 1px solid var(--color-border);">
           <button
             onclick="deleteBooking('${booking.id}')"
-            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+            class="btn"
+            style="background: var(--color-error); color: white;"
           >
             Delete Booking
           </button>
@@ -105,7 +108,7 @@ function openBookingDetails(bookingId) {
     </div>
   `;
 
-  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
 }
 
 async function updateBookingStatus(bookingId, status) {
@@ -155,11 +158,11 @@ function filterBookings(status) {
 
   // Update button styles
   document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.classList.remove('bg-gray-200', 'text-gray-900');
-    btn.classList.add('bg-gray-100', 'text-gray-700');
+    btn.classList.remove('filter-active');
+    btn.classList.add('filter-inactive');
   });
-  event.target.classList.remove('bg-gray-100', 'text-gray-700');
-  event.target.classList.add('bg-gray-200', 'text-gray-900');
+  event.target.classList.remove('filter-inactive');
+  event.target.classList.add('filter-active');
 
   renderBookings();
 }
@@ -181,7 +184,7 @@ function renderBookings() {
 
   if (filteredBookings.length === 0) {
     bookingsList.innerHTML = `
-      <div class="text-center py-12 text-gray-500">
+      <div style="text-align: center; padding: var(--space-12) 0; color: var(--color-text-tertiary);">
         No bookings found.
       </div>
     `;
@@ -189,11 +192,11 @@ function renderBookings() {
   }
 
   bookingsList.innerHTML = filteredBookings.map(booking => `
-    <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer" onclick="openBookingDetails('${booking.id}')">
-      <div class="flex justify-between items-start">
-        <div class="flex-1">
-          <h3 class="text-xl font-bold text-gray-900 mb-2">${booking.eventName}</h3>
-          <div class="space-y-1 text-sm text-gray-600">
+    <div class="card" style="cursor: pointer; transition: all var(--transition-base);" onclick="openBookingDetails('${booking.id}')" onmouseenter="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-md)'" onmouseleave="this.style.transform=''; this.style.boxShadow='var(--shadow-sm)'">
+      <div style="display: flex; justify-content: space-between; align-items: start;">
+        <div style="flex: 1;">
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--color-text-primary); margin-bottom: var(--space-2);">${booking.eventName}</h3>
+          <div style="display: flex; flex-direction: column; gap: var(--space-1); font-size: 0.875rem; color: var(--color-text-secondary);">
             <div><strong>Requester:</strong> ${booking.requester.firstName} ${booking.requester.lastName} (${booking.requester.email})</div>
             <div><strong>Space:</strong> ${booking.space.name}</div>
             <div><strong>Date:</strong> ${Utils.formatDate(booking.startDate)}</div>
@@ -201,7 +204,7 @@ function renderBookings() {
             <div><strong>Attendees:</strong> ${booking.attendees}</div>
           </div>
         </div>
-        <span class="px-3 py-1 rounded text-sm ${Utils.getStatusColor(booking.status)}">
+        <span class="${Utils.getStatusBadgeClass(booking.status)}">
           ${Utils.formatStatus(booking.status)}
         </span>
       </div>
@@ -220,7 +223,7 @@ async function loadBookings() {
   } catch (error) {
     Utils.showError(messageDiv, 'Failed to load bookings.');
     bookingsList.innerHTML = `
-      <div class="text-center py-12 text-red-600">
+      <div style="text-align: center; padding: var(--space-12) 0; color: var(--color-error);">
         Failed to load bookings. Please try again.
       </div>
     `;

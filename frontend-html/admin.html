@@ -4,15 +4,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel - CHQ Space Management</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/design-system.css">
+  <style>
+    .stat-card {
+      background: var(--color-bg);
+      padding: var(--space-6);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+    .filter-btn {
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.875rem;
+      transition: all var(--transition-base);
+    }
+    .filter-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+    .filter-active {
+      background: var(--color-bg-secondary);
+      color: var(--color-text-primary);
+    }
+    .filter-inactive {
+      background: var(--color-bg-tertiary);
+      color: var(--color-text-secondary);
+    }
+  </style>
 </head>
-<body class="bg-gray-50">
+<body style="background: var(--color-bg-tertiary); min-height: 100vh;">
   <div id="navigation"></div>
 
-  <main class="max-w-7xl mx-auto px-4 py-12">
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold text-gray-900">Admin Panel</h1>
-      <a href="/admin-users.html" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+  <main style="max-width: 80rem; margin: 0 auto; padding: var(--space-12) var(--space-4);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-6);">
+      <h1 style="font-size: 2rem; font-weight: 700; color: var(--color-text-primary);">Admin Panel</h1>
+      <a href="/admin-users.html" class="btn btn-primary">
         Manage Users
       </a>
     </div>
@@ -20,59 +49,59 @@
     <div id="message"></div>
 
     <!-- Statistics -->
-    <div class="grid md:grid-cols-4 gap-4 mb-8">
-      <div class="bg-white p-6 rounded-lg shadow">
-        <div class="text-2xl font-bold text-gray-900" id="statTotal">0</div>
-        <div class="text-sm text-gray-600">Total Bookings</div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-8);">
+      <div class="stat-card">
+        <div style="font-size: 2rem; font-weight: 700; color: var(--color-text-primary);" id="statTotal">0</div>
+        <div style="font-size: 0.875rem; color: var(--color-text-tertiary); margin-top: var(--space-1);">Total Bookings</div>
       </div>
-      <div class="bg-white p-6 rounded-lg shadow">
-        <div class="text-2xl font-bold text-yellow-600" id="statPending">0</div>
-        <div class="text-sm text-gray-600">Pending</div>
+      <div class="stat-card">
+        <div style="font-size: 2rem; font-weight: 700; color: #f59e0b;" id="statPending">0</div>
+        <div style="font-size: 0.875rem; color: var(--color-text-tertiary); margin-top: var(--space-1);">Pending</div>
       </div>
-      <div class="bg-white p-6 rounded-lg shadow">
-        <div class="text-2xl font-bold text-green-600" id="statApproved">0</div>
-        <div class="text-sm text-gray-600">Approved</div>
+      <div class="stat-card">
+        <div style="font-size: 2rem; font-weight: 700; color: #10b981;" id="statApproved">0</div>
+        <div style="font-size: 0.875rem; color: var(--color-text-tertiary); margin-top: var(--space-1);">Approved</div>
       </div>
-      <div class="bg-white p-6 rounded-lg shadow">
-        <div class="text-2xl font-bold text-red-600" id="statDenied">0</div>
-        <div class="text-sm text-gray-600">Denied</div>
+      <div class="stat-card">
+        <div style="font-size: 2rem; font-weight: 700; color: var(--color-error);" id="statDenied">0</div>
+        <div style="font-size: 0.875rem; color: var(--color-text-tertiary); margin-top: var(--space-1);">Denied</div>
       </div>
     </div>
 
     <!-- Filters -->
-    <div class="mb-6 flex gap-2">
-      <button onclick="filterBookings('ALL')" class="filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-900">
+    <div style="margin-bottom: var(--space-6); display: flex; gap: var(--space-2); flex-wrap: wrap;">
+      <button onclick="filterBookings('ALL')" class="filter-btn filter-active">
         All
       </button>
-      <button onclick="filterBookings('PENDING')" class="filter-btn px-4 py-2 rounded-lg bg-gray-100 text-gray-700">
+      <button onclick="filterBookings('PENDING')" class="filter-btn filter-inactive">
         Pending
       </button>
-      <button onclick="filterBookings('APPROVED')" class="filter-btn px-4 py-2 rounded-lg bg-gray-100 text-gray-700">
+      <button onclick="filterBookings('APPROVED')" class="filter-btn filter-inactive">
         Approved
       </button>
-      <button onclick="filterBookings('DENIED')" class="filter-btn px-4 py-2 rounded-lg bg-gray-100 text-gray-700">
+      <button onclick="filterBookings('DENIED')" class="filter-btn filter-inactive">
         Denied
       </button>
-      <button onclick="filterBookings('EDIT_REQUESTED')" class="filter-btn px-4 py-2 rounded-lg bg-gray-100 text-gray-700">
+      <button onclick="filterBookings('EDIT_REQUESTED')" class="filter-btn filter-inactive">
         Edit Requested
       </button>
     </div>
 
     <!-- Bookings List -->
-    <div id="bookingsList" class="space-y-4">
-      <div class="text-center py-12 text-gray-500">
+    <div id="bookingsList" style="display: flex; flex-direction: column; gap: var(--space-4);">
+      <div style="text-align: center; padding: var(--space-12) 0; color: var(--color-text-tertiary);">
         Loading bookings...
       </div>
     </div>
   </main>
 
   <!-- Booking Details Modal -->
-  <div id="bookingModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-lg p-6 max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-start mb-4">
-        <h2 id="modalTitle" class="text-2xl font-bold text-gray-900"></h2>
-        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <div id="bookingModal" style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center; z-index: 50; padding: var(--space-4);">
+    <div class="card" style="max-width: 48rem; width: 100%; max-height: 90vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--space-4);">
+        <h2 id="modalTitle" style="font-size: 1.5rem; font-weight: 700; color: var(--color-text-primary);"></h2>
+        <button onclick="closeModal()" class="btn-ghost" style="color: var(--color-text-tertiary); padding: var(--space-2);">
+          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
           </svg>
         </button>
