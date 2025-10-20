@@ -4,60 +4,93 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Users Management - CHQ Admin</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/design-system.css">
+  <style>
+    .stat-card {
+      background: var(--color-bg);
+      padding: var(--space-6);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead {
+      background: var(--color-bg-tertiary);
+    }
+    th {
+      padding: var(--space-3) var(--space-6);
+      text-align: left;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    tbody tr {
+      border-bottom: 1px solid var(--color-border);
+    }
+    tbody tr:hover {
+      background: var(--color-bg-tertiary);
+    }
+    td {
+      padding: var(--space-4) var(--space-6);
+      font-size: 0.875rem;
+    }
+    .spinner {
+      display: inline-block;
+      width: 2rem;
+      height: 2rem;
+      border: 3px solid var(--color-bg-tertiary);
+      border-top-color: var(--color-accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
-<body class="bg-gray-100">
-  <!-- Navigation -->
-  <nav class="bg-white shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16">
-        <div class="flex items-center">
-          <h1 class="text-xl font-bold text-gray-900">CHQ Admin - Users</h1>
-        </div>
-        <div class="flex items-center space-x-4">
-          <a href="/admin.html" class="text-gray-700 hover:text-gray-900">Bookings</a>
-          <a href="/admin-users.html" class="text-indigo-600 font-semibold">Users</a>
-          <button onclick="logout()" class="text-gray-700 hover:text-gray-900">Logout</button>
-        </div>
-      </div>
-    </div>
-  </nav>
+<body style="background: var(--color-bg-tertiary); min-height: 100vh;">
+  <div id="navigation"></div>
 
   <!-- Main Content -->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div style="max-width: 80rem; margin: 0 auto; padding: var(--space-8) var(--space-4);">
     <!-- Filters -->
-    <div class="bg-white rounded-lg shadow p-6 mb-6">
-      <h2 class="text-lg font-semibold mb-4">Filters</h2>
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="card" style="margin-bottom: var(--space-6);">
+      <h2 style="font-size: 1.125rem; font-weight: 600; margin-bottom: var(--space-4);">Filters</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4);">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
+          <label for="searchInput" class="label">Search</label>
           <input
             type="text"
             id="searchInput"
             placeholder="Name, email, or organization..."
-            class="w-full px-3 py-2 border border-gray-300 rounded-md"
+            class="input"
           />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Role</label>
-          <select id="roleFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+          <label for="roleFilter" class="label">Role</label>
+          <select id="roleFilter" class="input">
             <option value="">All Roles</option>
             <option value="USER">User</option>
             <option value="ADMIN">Admin</option>
           </select>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Email Status</label>
-          <select id="emailVerifiedFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+          <label for="emailVerifiedFilter" class="label">Email Status</label>
+          <select id="emailVerifiedFilter" class="input">
             <option value="">All</option>
             <option value="true">Verified</option>
             <option value="false">Not Verified</option>
           </select>
         </div>
-        <div class="flex items-end">
+        <div style="display: flex; align-items: flex-end;">
           <button
             onclick="loadUsers()"
-            class="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
+            class="btn btn-primary"
+            style="width: 100%;"
           >
             Apply Filters
           </button>
@@ -66,61 +99,62 @@
     </div>
 
     <!-- Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-      <div class="bg-white rounded-lg shadow p-6">
-        <div class="text-sm text-gray-500">Total Users</div>
-        <div id="totalUsers" class="text-3xl font-bold text-gray-900">-</div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-6); margin-bottom: var(--space-6);">
+      <div class="stat-card">
+        <div style="font-size: 0.875rem; color: var(--color-text-tertiary);">Total Users</div>
+        <div id="totalUsers" style="font-size: 2rem; font-weight: 700; color: var(--color-text-primary);">-</div>
       </div>
-      <div class="bg-white rounded-lg shadow p-6">
-        <div class="text-sm text-gray-500">Verified</div>
-        <div id="verifiedUsers" class="text-3xl font-bold text-green-600">-</div>
+      <div class="stat-card">
+        <div style="font-size: 0.875rem; color: var(--color-text-tertiary);">Verified</div>
+        <div id="verifiedUsers" style="font-size: 2rem; font-weight: 700; color: #10b981;">-</div>
       </div>
-      <div class="bg-white rounded-lg shadow p-6">
-        <div class="text-sm text-gray-500">Not Verified</div>
-        <div id="unverifiedUsers" class="text-3xl font-bold text-yellow-600">-</div>
+      <div class="stat-card">
+        <div style="font-size: 0.875rem; color: var(--color-text-tertiary);">Not Verified</div>
+        <div id="unverifiedUsers" style="font-size: 2rem; font-weight: 700; color: #f59e0b;">-</div>
       </div>
-      <div class="bg-white rounded-lg shadow p-6">
-        <div class="text-sm text-gray-500">Admins</div>
-        <div id="adminUsers" class="text-3xl font-bold text-indigo-600">-</div>
+      <div class="stat-card">
+        <div style="font-size: 0.875rem; color: var(--color-text-tertiary);">Admins</div>
+        <div id="adminUsers" style="font-size: 2rem; font-weight: 700; color: var(--color-accent);">-</div>
       </div>
     </div>
 
     <!-- Users Table -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-      <div class="px-6 py-4 border-b border-gray-200">
-        <h2 class="text-lg font-semibold">Registered Users</h2>
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <div style="padding: var(--space-4) var(--space-6); border-bottom: 1px solid var(--color-border);">
+        <h2 style="font-size: 1.125rem; font-weight: 600;">Registered Users</h2>
       </div>
-      <div id="loading" class="text-center py-8">
-        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+      <div id="loading" style="text-align: center; padding: var(--space-8);">
+        <div class="spinner"></div>
       </div>
-      <div id="usersTable" class="hidden overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+      <div id="usersTable" style="display: none; overflow-x: auto;">
+        <table>
+          <thead>
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Organization</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bookings</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
+              <th>User</th>
+              <th>Contact</th>
+              <th>Organization</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Bookings</th>
+              <th>Joined</th>
             </tr>
           </thead>
-          <tbody id="usersTableBody" class="bg-white divide-y divide-gray-200">
+          <tbody id="usersTableBody">
             <!-- Users will be inserted here -->
           </tbody>
         </table>
       </div>
-      <div id="noUsers" class="hidden text-center py-8 text-gray-500">
+      <div id="noUsers" style="display: none; text-align: center; padding: var(--space-8); color: var(--color-text-tertiary);">
         No users found
       </div>
     </div>
   </div>
 
-  <script src="js/config.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/utils.js"></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/navigation.js"></script>
   <script>
     let allUsers = [];
 
@@ -130,9 +164,9 @@
       const noUsers = document.getElementById('noUsers');
       const usersTableBody = document.getElementById('usersTableBody');
 
-      loading.classList.remove('hidden');
-      usersTable.classList.add('hidden');
-      noUsers.classList.add('hidden');
+      loading.style.display = 'block';
+      usersTable.style.display = 'none';
+      noUsers.style.display = 'none';
 
       try {
         const search = document.getElementById('searchInput').value;
@@ -151,19 +185,19 @@
 
         allUsers = await API.get(url);
 
-        loading.classList.add('hidden');
+        loading.style.display = 'none';
 
         if (allUsers.length === 0) {
-          noUsers.classList.remove('hidden');
+          noUsers.style.display = 'block';
           updateStats();
           return;
         }
 
-        usersTable.classList.remove('hidden');
+        usersTable.style.display = 'block';
         renderUsers(allUsers);
         updateStats();
       } catch (error) {
-        loading.classList.add('hidden');
+        loading.style.display = 'none';
         alert('Error loading users: ' + error.message);
       }
     }
@@ -172,41 +206,37 @@
       const tbody = document.getElementById('usersTableBody');
       tbody.innerHTML = users.map(user => `
         <tr>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <div class="flex items-center">
+          <td>
+            <div style="display: flex; align-items: center;">
               <div>
-                <div class="text-sm font-medium text-gray-900">
+                <div style="font-weight: 500; color: var(--color-text-primary);">
                   ${user.firstName || ''} ${user.lastName || ''}
                 </div>
-                <div class="text-sm text-gray-500">${user.email}</div>
+                <div style="color: var(--color-text-tertiary); font-size: 0.75rem;">${user.email}</div>
               </div>
             </div>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm text-gray-900">${user.phoneNumber || '-'}</div>
-            <div class="text-sm text-gray-500">${user.jobTitle || '-'}</div>
+          <td>
+            <div style="color: var(--color-text-primary);">${user.phoneNumber || '-'}</div>
+            <div style="color: var(--color-text-tertiary); font-size: 0.75rem;">${user.jobTitle || '-'}</div>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm text-gray-900">${user.entity || '-'}</div>
+          <td>
+            <div style="color: var(--color-text-primary);">${user.entity || '-'}</div>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-              user.role === 'ADMIN' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'
-            }">
+          <td>
+            <span class="badge ${user.role === 'ADMIN' ? 'badge-info' : 'badge-neutral'}">
               ${user.role}
             </span>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-              user.emailVerified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-            }">
+          <td>
+            <span class="badge ${user.emailVerified ? 'badge-success' : 'badge-warning'}">
               ${user.emailVerified ? 'Verified' : 'Not Verified'}
             </span>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          <td style="color: var(--color-text-tertiary);">
             ${user._count.bookings}
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          <td style="color: var(--color-text-tertiary);">
             ${Utils.formatDate(user.createdAt)}
           </td>
         </tr>
@@ -220,23 +250,16 @@
       document.getElementById('adminUsers').textContent = allUsers.filter(u => u.role === 'ADMIN').length;
     }
 
-    async function logout() {
-      try {
-        await Auth.logout();
-      } catch (error) {
-        console.error('Logout error:', error);
-        localStorage.clear();
-        window.location.href = '/login.html';
-      }
-    }
-
     // Search on input
     document.getElementById('searchInput').addEventListener('input', () => {
       loadUsers();
     });
 
-    // Load users on page load
-    loadUsers();
+    // Require admin authentication and load users
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!Auth.requireAdmin()) return;
+      loadUsers();
+    });
   </script>
 </body>
 </html>
