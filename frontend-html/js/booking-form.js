@@ -206,6 +206,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const startDateTime = new Date(`${startDate}T${startTime}`);
     const endDateTime = new Date(`${endDate}T${endTime}`);
 
+    // Get visibility selection
+    const visibilityRadio = document.querySelector('input[name="visibility"]:checked');
+    const visibility = visibilityRadio ? visibilityRadio.value : 'PUBLIC';
+
     const formData = {
       firstName,
       lastName,
@@ -225,7 +229,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       photography: document.getElementById('photography')?.checked || false,
       itSupport: document.getElementById('itSupport')?.checked || false,
       screensDisplay: document.getElementById('screensDisplay')?.checked || false,
-      visibility: document.getElementById('visibility').value,
+      visibility: visibility,
       comments: document.getElementById('comments').value || undefined,
     };
 
@@ -276,13 +280,18 @@ async function loadBookingData(bookingId, messageDiv) {
     document.getElementById('spaceId').value = booking.spaceId || '';
     document.getElementById('attendees').value = booking.attendees || '';
     document.getElementById('agenda').value = booking.agenda || '';
-    document.getElementById('visibility').value = booking.visibility || 'PUBLIC';
     document.getElementById('comments').value = booking.comments || '';
 
     // Set seating radio button
     if (booking.seating) {
       const seatingRadio = document.querySelector(`input[name="seating"][value="${booking.seating}"]`);
       if (seatingRadio) seatingRadio.checked = true;
+    }
+
+    // Set visibility radio button
+    if (booking.visibility) {
+      const visibilityRadio = document.querySelector(`input[name="visibility"][value="${booking.visibility}"]`);
+      if (visibilityRadio) visibilityRadio.checked = true;
     }
 
     // Set date and time values
