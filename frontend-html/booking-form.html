@@ -5,32 +5,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Coders HQ Venue Booking - CHQ Space Management</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .form-section {
+      background: linear-gradient(to right, #f8fafc 0%, #ffffff 100%);
+      border-left: 4px solid #3b82f6;
+    }
+    .input-field:focus {
+      transform: translateY(-1px);
+      transition: all 0.2s ease;
+    }
+    .radio-card {
+      transition: all 0.2s ease;
+    }
+    .radio-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .radio-card input:checked ~ div {
+      border-color: #3b82f6;
+      background-color: #eff6ff;
+    }
+  </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
   <div id="navigation"></div>
 
-  <main class="max-w-4xl mx-auto px-4 py-8">
-    <div class="bg-white p-8 rounded-lg shadow-lg">
-      <!-- Header -->
-      <div class="mb-8">
-        <h1 class="text-3xl font-bold mb-4 text-gray-900">Coders HQ Venue Booking</h1>
-        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
-          <p class="text-sm text-gray-700 mb-2">
-            Kindly fill the below details to book the Coders HQ space. A confirmation email will be sent within <strong>1 working day</strong>.
-          </p>
-          <p class="text-xs text-gray-600 italic">
-            When you submit this form, it will not automatically collect your details like name and email address unless you provide it yourself.
-          </p>
+  <main class="max-w-5xl mx-auto px-4 py-12">
+    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+      <!-- Header with gradient -->
+      <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-8 text-white">
+        <h1 class="text-4xl font-bold mb-3">Coders HQ Venue Booking</h1>
+        <p class="text-blue-100 text-lg">Reserve your perfect space for success</p>
+      </div>
+
+      <!-- Info Banner -->
+      <div class="bg-blue-50 border-l-4 border-blue-500 p-6 m-8 rounded-r-lg">
+        <div class="flex items-start">
+          <svg class="w-6 h-6 text-blue-600 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <div>
+            <p class="text-sm text-gray-800 font-medium mb-1">
+              Quick Response Guarantee
+            </p>
+            <p class="text-sm text-gray-700 mb-2">
+              A confirmation email will be sent within <strong class="text-blue-700">1 working day</strong>.
+            </p>
+            <p class="text-xs text-gray-600 italic">
+              Your privacy is important - we only collect information you explicitly provide.
+            </p>
+          </div>
         </div>
       </div>
 
-      <div id="message"></div>
+      <div id="message" class="mx-8"></div>
 
-      <form id="bookingForm" class="space-y-6">
+      <form id="bookingForm" class="p-8 space-y-8">
         <!-- Personal Information -->
-        <div class="border-b pb-6">
-          <h2 class="text-xl font-semibold mb-4 text-gray-800">Personal Information</h2>
-          <div class="grid md:grid-cols-2 gap-4">
+        <div class="form-section rounded-lg p-6 mb-6">
+          <div class="flex items-center mb-6">
+            <svg class="w-7 h-7 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+            <h2 class="text-2xl font-bold text-gray-800">Personal Information</h2>
+          </div>
+          <div class="grid md:grid-cols-2 gap-6">
             <div>
               <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">
                 1. First Name <span class="text-red-500">*</span>
@@ -39,8 +78,8 @@
                 type="text"
                 id="firstName"
                 required
-                placeholder="Enter your answer"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your first name"
+                class="input-field w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
               />
             </div>
 
@@ -53,7 +92,7 @@
                 id="lastName"
                 required
                 placeholder="Enter your answer"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="input-field w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
               />
             </div>
 
@@ -66,7 +105,7 @@
                 id="email"
                 required
                 placeholder="Enter your answer"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="input-field w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
               />
             </div>
 
@@ -79,7 +118,7 @@
                 id="phoneNumber"
                 required
                 placeholder="Enter your answer"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="input-field w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
               />
             </div>
 
@@ -92,7 +131,7 @@
                 id="entity"
                 required
                 placeholder="Enter your answer"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="input-field w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
               />
             </div>
 
@@ -105,15 +144,20 @@
                 id="jobTitle"
                 required
                 placeholder="Enter your answer"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="input-field w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
               />
             </div>
           </div>
         </div>
 
         <!-- Event Details -->
-        <div class="border-b pb-6">
-          <h2 class="text-xl font-semibold mb-4 text-gray-800">Event Details</h2>
+        <div class="form-section rounded-lg p-6 mb-6">
+          <div class="flex items-center mb-6">
+            <svg class="w-7 h-7 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <h2 class="text-2xl font-bold text-gray-800">Event Details</h2>
+          </div>
 
           <div class="mb-4">
             <label for="eventName" class="block text-sm font-medium text-gray-700 mb-2">
@@ -124,7 +168,7 @@
               id="eventName"
               required
               placeholder="Enter your answer"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="input-field w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
             />
           </div>
 
@@ -136,7 +180,7 @@
             <select
               id="spaceId"
               required
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="input-field w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
             >
               <option value="">Select a space</option>
             </select>
@@ -153,7 +197,7 @@
                 id="startDate"
                 required
                 placeholder="Please input date (dd/MM/yyyy)"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="input-field w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
               />
               <p id="startDate-error" class="text-xs text-red-600 mt-1 hidden"></p>
               <p class="text-xs text-gray-500 mt-1">Please input date (dd/MM/yyyy)</p>
@@ -168,7 +212,7 @@
                 id="endDate"
                 required
                 placeholder="Please input date (dd/MM/yyyy)"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="input-field w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
               />
               <p id="endDate-error" class="text-xs text-red-600 mt-1 hidden"></p>
               <p class="text-xs text-gray-500 mt-1">Please input date (dd/MM/yyyy)</p>
@@ -227,29 +271,37 @@
           </div>
 
           <!-- Seating Arrangement -->
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-3">
               12. Seating Arrangement <span class="text-red-500">*</span>
             </label>
-            <div class="space-y-2">
-              <label class="flex items-center">
-                <input type="radio" name="seating" value="THEATRE" required class="mr-2">
-                <span class="text-sm text-gray-700">Theatre</span>
+            <div class="grid md:grid-cols-2 gap-3">
+              <label class="radio-card cursor-pointer block p-4 border-2 border-gray-200 rounded-lg hover:bg-gray-50">
+                <div class="flex items-center">
+                  <input type="radio" name="seating" value="THEATRE" required class="mr-3 w-4 h-4 text-blue-600">
+                  <span class="text-sm font-semibold text-gray-800">Theatre Style</span>
+                </div>
               </label>
-              <label class="flex items-center">
-                <input type="radio" name="seating" value="WORKSHOP" class="mr-2">
-                <span class="text-sm text-gray-700">Workshop</span>
+              <label class="radio-card cursor-pointer block p-4 border-2 border-gray-200 rounded-lg hover:bg-gray-50">
+                <div class="flex items-center">
+                  <input type="radio" name="seating" value="WORKSHOP" class="mr-3 w-4 h-4 text-blue-600">
+                  <span class="text-sm font-semibold text-gray-800">Workshop Style</span>
+                </div>
               </label>
-              <label class="flex items-center">
-                <input type="radio" name="seating" value="CLASSROOM" class="mr-2">
-                <span class="text-sm text-gray-700">Classroom</span>
+              <label class="radio-card cursor-pointer block p-4 border-2 border-gray-200 rounded-lg hover:bg-gray-50">
+                <div class="flex items-center">
+                  <input type="radio" name="seating" value="CLASSROOM" class="mr-3 w-4 h-4 text-blue-600">
+                  <span class="text-sm font-semibold text-gray-800">Classroom Style</span>
+                </div>
               </label>
-              <label class="flex items-center">
-                <input type="radio" name="seating" value="USHAPE" class="mr-2">
-                <span class="text-sm text-gray-700">U shape</span>
+              <label class="radio-card cursor-pointer block p-4 border-2 border-gray-200 rounded-lg hover:bg-gray-50">
+                <div class="flex items-center">
+                  <input type="radio" name="seating" value="USHAPE" class="mr-3 w-4 h-4 text-blue-600">
+                  <span class="text-sm font-semibold text-gray-800">U-Shape Style</span>
+                </div>
               </label>
             </div>
-            <p id="seating-error" class="text-xs text-red-600 mt-1 hidden"></p>
+            <p id="seating-error" class="text-xs text-red-600 mt-2 hidden"></p>
           </div>
 
           <div class="mb-4">
@@ -262,14 +314,19 @@
               rows="5"
               required
               placeholder="Enter your answer"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="input-field w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
             ></textarea>
           </div>
         </div>
 
         <!-- Additional Requirements -->
-        <div class="border-b pb-6">
-          <h2 class="text-xl font-semibold mb-2 text-gray-800">14. Do you require any of the following?</h2>
+        <div class="form-section rounded-lg p-6 mb-6">
+          <div class="flex items-center mb-4">
+            <svg class="w-7 h-7 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+            </svg>
+            <h2 class="text-2xl font-bold text-gray-800">Additional Requirements</h2>
+          </div>
           <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
             <p class="text-xs text-gray-700">
               Kindly note that we do not provide catering or valet from our side. For catering, kindly contact
@@ -279,55 +336,67 @@
             </p>
           </div>
 
-          <div class="space-y-3">
-            <label class="flex items-center">
-              <input type="checkbox" id="valet" class="mr-3 w-4 h-4">
-              <span class="text-sm text-gray-700">Valet</span>
+          <div class="grid md:grid-cols-2 gap-3">
+            <label class="cursor-pointer flex items-center p-3 border-2 border-gray-200 rounded-lg hover:bg-gray-50 hover:border-blue-300 transition-all">
+              <input type="checkbox" id="valet" class="mr-3 w-5 h-5 text-blue-600 rounded">
+              <span class="text-sm font-medium text-gray-700">Valet Service</span>
             </label>
-            <label class="flex items-center">
-              <input type="checkbox" id="catering" class="mr-3 w-4 h-4">
-              <span class="text-sm text-gray-700">Catering</span>
+            <label class="cursor-pointer flex items-center p-3 border-2 border-gray-200 rounded-lg hover:bg-gray-50 hover:border-blue-300 transition-all">
+              <input type="checkbox" id="catering" class="mr-3 w-5 h-5 text-blue-600 rounded">
+              <span class="text-sm font-medium text-gray-700">Catering</span>
             </label>
-            <label class="flex items-center">
-              <input type="checkbox" id="photography" class="mr-3 w-4 h-4">
-              <span class="text-sm text-gray-700">Photography/Videography Permit</span>
+            <label class="cursor-pointer flex items-center p-3 border-2 border-gray-200 rounded-lg hover:bg-gray-50 hover:border-blue-300 transition-all">
+              <input type="checkbox" id="photography" class="mr-3 w-5 h-5 text-blue-600 rounded">
+              <span class="text-sm font-medium text-gray-700">Photography/Videography</span>
             </label>
-            <label class="flex items-center">
-              <input type="checkbox" id="itSupport" class="mr-3 w-4 h-4">
-              <span class="text-sm text-gray-700">IT Support</span>
+            <label class="cursor-pointer flex items-center p-3 border-2 border-gray-200 rounded-lg hover:bg-gray-50 hover:border-blue-300 transition-all">
+              <input type="checkbox" id="itSupport" class="mr-3 w-5 h-5 text-blue-600 rounded">
+              <span class="text-sm font-medium text-gray-700">IT Support</span>
             </label>
-            <label class="flex items-center">
-              <input type="checkbox" id="screensDisplay" class="mr-3 w-4 h-4">
-              <span class="text-sm text-gray-700">Screens Display</span>
+            <label class="cursor-pointer flex items-center p-3 border-2 border-gray-200 rounded-lg hover:bg-gray-50 hover:border-blue-300 transition-all">
+              <input type="checkbox" id="screensDisplay" class="mr-3 w-5 h-5 text-blue-600 rounded">
+              <span class="text-sm font-medium text-gray-700">Screens Display</span>
             </label>
           </div>
         </div>
 
         <!-- Event Visibility -->
-        <div class="border-b pb-6 mb-6">
-          <h2 class="text-xl font-semibold mb-2 text-gray-800">15. Event Visibility</h2>
-          <p class="text-xs text-gray-600 mb-4">Choose who can see this event on the public calendar</p>
+        <div class="form-section rounded-lg p-6 mb-6">
+          <div class="flex items-center mb-2">
+            <svg class="w-7 h-7 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+            <h2 class="text-2xl font-bold text-gray-800">Event Visibility</h2>
+          </div>
+          <p class="text-sm text-gray-600 mb-4 ml-10">Choose who can see this event on the public calendar</p>
 
-          <div class="space-y-2">
-            <label class="flex items-start">
-              <input type="radio" name="visibility" value="PUBLIC" checked class="mr-3 mt-1">
-              <div>
-                <span class="text-sm font-medium text-gray-700">Public</span>
-                <p class="text-xs text-gray-500">Event will be visible to everyone on the calendar</p>
+          <div class="space-y-3 ml-10">
+            <label class="radio-card cursor-pointer block p-4 border-2 border-gray-200 rounded-lg hover:bg-gray-50">
+              <div class="flex items-start">
+                <input type="radio" name="visibility" value="PUBLIC" checked class="mt-1 mr-3 w-4 h-4 text-blue-600">
+                <div>
+                  <span class="text-sm font-semibold text-gray-800">Public</span>
+                  <p class="text-xs text-gray-600 mt-1">Event will be visible to everyone on the calendar</p>
+                </div>
               </div>
             </label>
-            <label class="flex items-start">
-              <input type="radio" name="visibility" value="INTERNAL" class="mr-3 mt-1">
-              <div>
-                <span class="text-sm font-medium text-gray-700">Internal</span>
-                <p class="text-xs text-gray-500">Event visible only to internal staff members</p>
+            <label class="radio-card cursor-pointer block p-4 border-2 border-gray-200 rounded-lg hover:bg-gray-50">
+              <div class="flex items-start">
+                <input type="radio" name="visibility" value="INTERNAL" class="mt-1 mr-3 w-4 h-4 text-blue-600">
+                <div>
+                  <span class="text-sm font-semibold text-gray-800">Internal</span>
+                  <p class="text-xs text-gray-600 mt-1">Event visible only to internal staff members</p>
+                </div>
               </div>
             </label>
-            <label class="flex items-start">
-              <input type="radio" name="visibility" value="PRIVATE" class="mr-3 mt-1">
-              <div>
-                <span class="text-sm font-medium text-gray-700">Private</span>
-                <p class="text-xs text-gray-500">Event will not appear on the public calendar (admin only)</p>
+            <label class="radio-card cursor-pointer block p-4 border-2 border-gray-200 rounded-lg hover:bg-gray-50">
+              <div class="flex items-start">
+                <input type="radio" name="visibility" value="PRIVATE" class="mt-1 mr-3 w-4 h-4 text-blue-600">
+                <div>
+                  <span class="text-sm font-semibold text-gray-800">Private</span>
+                  <p class="text-xs text-gray-600 mt-1">Event will not appear on the public calendar (admin only)</p>
+                </div>
               </div>
             </label>
           </div>
@@ -342,16 +411,19 @@
             id="comments"
             rows="4"
             placeholder="Enter your answer"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="input-field w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
           ></textarea>
         </div>
 
         <button
           type="submit"
           id="submitBtn"
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold text-lg transition shadow-lg"
+          class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-4 rounded-xl font-bold text-lg transition-all duration-200 shadow-xl hover:shadow-2xl transform hover:-translate-y-0.5 flex items-center justify-center"
         >
-          Submit
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          Submit Booking Request
         </button>
       </form>
     </div>
