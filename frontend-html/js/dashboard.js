@@ -81,11 +81,11 @@ function filterBookings(status) {
 
   // Update button styles
   document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.classList.remove('bg-gray-200', 'text-gray-900');
-    btn.classList.add('bg-gray-100', 'text-gray-700');
+    btn.classList.remove('filter-active');
+    btn.classList.add('filter-inactive');
   });
-  event.target.classList.remove('bg-gray-100', 'text-gray-700');
-  event.target.classList.add('bg-gray-200', 'text-gray-900');
+  event.target.classList.remove('filter-inactive');
+  event.target.classList.add('filter-active');
 
   renderBookings();
 }
@@ -100,7 +100,7 @@ function renderBookings() {
 
   if (filteredBookings.length === 0) {
     bookingsList.innerHTML = `
-      <div class="text-center py-12 text-gray-500">
+      <div style="text-align: center; padding: var(--space-12) 0; color: var(--color-text-tertiary);">
         No bookings found.
       </div>
     `;
@@ -108,18 +108,18 @@ function renderBookings() {
   }
 
   bookingsList.innerHTML = filteredBookings.map(booking => `
-    <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer" onclick="openBookingDetails('${booking.id}')">
-      <div class="flex justify-between items-start">
-        <div class="flex-1">
-          <h3 class="text-xl font-bold text-gray-900 mb-2">${booking.eventName}</h3>
-          <div class="space-y-1 text-sm text-gray-600">
+    <div class="card" style="cursor: pointer; transition: all var(--transition-base);" onclick="openBookingDetails('${booking.id}')" onmouseenter="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-md)'" onmouseleave="this.style.transform=''; this.style.boxShadow='var(--shadow-sm)'">
+      <div style="display: flex; justify-content: space-between; align-items: start;">
+        <div style="flex: 1;">
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--color-text-primary); margin-bottom: var(--space-2);">${booking.eventName}</h3>
+          <div style="display: flex; flex-direction: column; gap: var(--space-1); font-size: 0.875rem; color: var(--color-text-secondary);">
             <div><strong>Space:</strong> ${booking.space.name}</div>
             <div><strong>Date:</strong> ${Utils.formatDate(booking.startDate)}</div>
             <div><strong>Time:</strong> ${new Date(booking.startDate).toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'})} - ${new Date(booking.endDate).toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'})}</div>
             <div><strong>Attendees:</strong> ${booking.attendees}</div>
           </div>
         </div>
-        <span class="px-3 py-1 rounded text-sm ${Utils.getStatusColor(booking.status)}">
+        <span class="${Utils.getStatusBadgeClass(booking.status)}">
           ${Utils.formatStatus(booking.status)}
         </span>
       </div>
@@ -137,7 +137,7 @@ async function loadBookings() {
   } catch (error) {
     Utils.showError(messageDiv, 'Failed to load bookings.');
     bookingsList.innerHTML = `
-      <div class="text-center py-12 text-red-600">
+      <div style="text-align: center; padding: var(--space-12) 0; color: var(--color-error);">
         Failed to load bookings. Please try again.
       </div>
     `;

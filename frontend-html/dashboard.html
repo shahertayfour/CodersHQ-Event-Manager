@@ -5,45 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Bookings - CHQ Space Management</title>
   <link rel="stylesheet" href="/css/design-system.css">
+  <style>
+    .filter-btn {
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.875rem;
+      transition: all var(--transition-base);
+    }
+    .filter-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+    .filter-active {
+      background: var(--color-bg-secondary);
+      color: var(--color-text-primary);
+    }
+    .filter-inactive {
+      background: var(--color-bg-tertiary);
+      color: var(--color-text-secondary);
+    }
+  </style>
 </head>
-<body>
+<body style="background: var(--color-bg-tertiary); min-height: 100vh;">
   <div id="navigation"></div>
 
-  <main style="padding: var(--space-6) var(--space-4);">
-    <div class="container">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-6); flex-wrap: wrap; gap: var(--space-4);">
-        <h1 style="margin: 0;">My Bookings</h1>
-        <a href="/booking-form.html" class="btn btn-primary">
-          New Booking
-        </a>
-      </div>
+  <main style="max-width: 80rem; margin: 0 auto; padding: var(--space-12) var(--space-4);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-6); flex-wrap: wrap; gap: var(--space-4);">
+      <h1 style="margin: 0; font-size: 2rem; font-weight: 700; color: var(--color-text-primary);">My Bookings</h1>
+      <a href="/booking-form.html" class="btn btn-primary">
+        New Booking
+      </a>
+    </div>
 
-      <div id="message"></div>
+    <div id="message"></div>
 
-      <!-- Filters -->
-      <div style="margin-bottom: var(--space-6); display: flex; gap: var(--space-2); flex-wrap: wrap;">
-        <button onclick="filterBookings('ALL')" class="filter-btn btn btn-secondary" data-status="ALL">
-          All
-        </button>
-        <button onclick="filterBookings('PENDING')" class="filter-btn btn btn-ghost" data-status="PENDING">
-          Pending
-        </button>
-        <button onclick="filterBookings('APPROVED')" class="filter-btn btn btn-ghost" data-status="APPROVED">
-          Approved
-        </button>
-        <button onclick="filterBookings('DENIED')" class="filter-btn btn btn-ghost" data-status="DENIED">
-          Denied
-        </button>
-        <button onclick="filterBookings('EDIT_REQUESTED')" class="filter-btn btn btn-ghost" data-status="EDIT_REQUESTED">
-          Edit Requested
-        </button>
-      </div>
+    <!-- Filters -->
+    <div style="margin-bottom: var(--space-6); display: flex; gap: var(--space-2); flex-wrap: wrap;">
+      <button onclick="filterBookings('ALL')" class="filter-btn filter-active">
+        All
+      </button>
+      <button onclick="filterBookings('PENDING')" class="filter-btn filter-inactive">
+        Pending
+      </button>
+      <button onclick="filterBookings('APPROVED')" class="filter-btn filter-inactive">
+        Approved
+      </button>
+      <button onclick="filterBookings('DENIED')" class="filter-btn filter-inactive">
+        Denied
+      </button>
+      <button onclick="filterBookings('EDIT_REQUESTED')" class="filter-btn filter-inactive">
+        Edit Requested
+      </button>
+    </div>
 
-      <!-- Bookings List -->
-      <div id="bookingsList" style="display: flex; flex-direction: column; gap: var(--space-4);">
-        <div style="text-align: center; padding: var(--space-12) 0; color: var(--color-text-tertiary);">
-          Loading bookings...
-        </div>
+    <!-- Bookings List -->
+    <div id="bookingsList" style="display: flex; flex-direction: column; gap: var(--space-4);">
+      <div style="text-align: center; padding: var(--space-12) 0; color: var(--color-text-tertiary);">
+        Loading bookings...
       </div>
     </div>
   </main>
