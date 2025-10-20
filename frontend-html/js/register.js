@@ -9,9 +9,33 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('registerForm');
   const messageDiv = document.getElementById('message');
   const submitBtn = document.getElementById('submitBtn');
+  const googleSignupBtn = document.getElementById('googleSignupBtn');
+  const githubSignupBtn = document.getElementById('githubSignupBtn');
   const passwordInput = document.getElementById('password');
   const passwordStrengthBar = document.getElementById('passwordStrengthBar');
   const passwordHint = document.getElementById('passwordHint');
+
+  // Google Signup
+  if (googleSignupBtn) {
+    googleSignupBtn.addEventListener('click', async () => {
+      try {
+        await Auth.auth0SignupWithConnection('google-oauth2');
+      } catch (error) {
+        Utils.showError(messageDiv, error.message || 'Google signup failed');
+      }
+    });
+  }
+
+  // GitHub Signup
+  if (githubSignupBtn) {
+    githubSignupBtn.addEventListener('click', async () => {
+      try {
+        await Auth.auth0SignupWithConnection('github');
+      } catch (error) {
+        Utils.showError(messageDiv, error.message || 'GitHub signup failed');
+      }
+    });
+  }
 
   // Password strength checker
   function checkPasswordStrength(password) {

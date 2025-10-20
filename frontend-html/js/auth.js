@@ -94,6 +94,50 @@ const Auth = {
     }
   },
 
+  // Auth0 Login with specific connection (Google, GitHub, etc.)
+  async auth0LoginWithConnection(connection) {
+    try {
+      if (typeof initAuth0 === 'function') {
+        await initAuth0();
+      }
+      if (auth0Client) {
+        await auth0Client.loginWithRedirect({
+          authorizationParams: {
+            connection: connection,
+            screen_hint: 'login'
+          }
+        });
+      } else {
+        throw new Error('Auth0 client not initialized');
+      }
+    } catch (error) {
+      console.error('Auth0 connection login error:', error);
+      throw error;
+    }
+  },
+
+  // Auth0 Signup with specific connection
+  async auth0SignupWithConnection(connection) {
+    try {
+      if (typeof initAuth0 === 'function') {
+        await initAuth0();
+      }
+      if (auth0Client) {
+        await auth0Client.loginWithRedirect({
+          authorizationParams: {
+            connection: connection,
+            screen_hint: 'signup'
+          }
+        });
+      } else {
+        throw new Error('Auth0 client not initialized');
+      }
+    } catch (error) {
+      console.error('Auth0 connection signup error:', error);
+      throw error;
+    }
+  },
+
   // Logout
   async logout() {
     // Check if using Auth0

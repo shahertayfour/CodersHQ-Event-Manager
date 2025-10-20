@@ -9,6 +9,30 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('loginForm');
   const messageDiv = document.getElementById('message');
   const submitBtn = document.getElementById('submitBtn');
+  const googleLoginBtn = document.getElementById('googleLoginBtn');
+  const githubLoginBtn = document.getElementById('githubLoginBtn');
+
+  // Google Login
+  if (googleLoginBtn) {
+    googleLoginBtn.addEventListener('click', async () => {
+      try {
+        await Auth.auth0LoginWithConnection('google-oauth2');
+      } catch (error) {
+        Utils.showError(messageDiv, error.message || 'Google login failed');
+      }
+    });
+  }
+
+  // GitHub Login
+  if (githubLoginBtn) {
+    githubLoginBtn.addEventListener('click', async () => {
+      try {
+        await Auth.auth0LoginWithConnection('github');
+      } catch (error) {
+        Utils.showError(messageDiv, error.message || 'GitHub login failed');
+      }
+    });
+  }
 
   // Email/Password Login
   form.addEventListener('submit', async (e) => {
