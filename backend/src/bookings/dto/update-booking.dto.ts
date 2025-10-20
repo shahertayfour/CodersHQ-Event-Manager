@@ -7,8 +7,9 @@ import {
   IsOptional,
   Min,
   IsBoolean,
+  IsArray,
 } from 'class-validator';
-import { Seating, Visibility } from '@prisma/client';
+import { Seating, Visibility, DepthLevel } from '@prisma/client';
 
 export class UpdateBookingDto {
   @IsString()
@@ -46,10 +47,29 @@ export class UpdateBookingDto {
   attendees: number;
 
   @IsEnum(Seating)
-  seating: Seating;
+  @IsOptional()
+  seating?: Seating;
 
   @IsString()
   agenda: string;
+
+  // Lecture Room specific fields
+  @IsString()
+  @IsOptional()
+  speaker?: string;
+
+  @IsString()
+  @IsOptional()
+  topic?: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  partners?: string[];
+
+  @IsEnum(DepthLevel)
+  @IsOptional()
+  depthLevel?: DepthLevel;
 
   @IsBoolean()
   @IsOptional()

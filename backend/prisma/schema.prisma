@@ -81,8 +81,14 @@ model Booking {
 
   // Event details
   attendees         Int
-  seating           Seating
+  seating           Seating?      // Optional - only for Lecture Room
   agenda            String
+
+  // Lecture Room specific fields
+  speaker           String?       // Speaker name/info
+  topic             String?       // Lecture topic
+  partners          String[]      // Organizing partners
+  depthLevel        DepthLevel?   // Exploration/Professional/Advanced
 
   // Services/Requirements (stored as array)
   valet             Boolean       @default(false)
@@ -130,4 +136,10 @@ enum Visibility {
   PUBLIC
   PRIVATE
   INTERNAL
+}
+
+enum DepthLevel {
+  EXPLORATION
+  PROFESSIONAL
+  ADVANCED
 }
