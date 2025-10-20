@@ -95,14 +95,16 @@ document.addEventListener('DOMContentLoaded', async () => {
           return event;
         });
 
-        // Populate space filter dropdown with unique space names
-        const uniqueSpaces = [...new Set(bookings.map(b => b.spaceName))];
-        uniqueSpaces.forEach(spaceName => {
-          const option = document.createElement('option');
-          option.value = spaceName;
-          option.textContent = spaceName;
-          spaceFilter.appendChild(option);
-        });
+        // Populate space filter dropdown with unique space names (only if empty)
+        if (spaceFilter.options.length === 1) { // Only has the "All Spaces" option
+          const uniqueSpaces = [...new Set(bookings.map(b => b.spaceName))];
+          uniqueSpaces.forEach(spaceName => {
+            const option = document.createElement('option');
+            option.value = spaceName;
+            option.textContent = spaceName;
+            spaceFilter.appendChild(option);
+          });
+        }
 
         console.log('Final events:', allEvents);
         const filteredEvents = filterEventsBySpace(spaceFilter.value);
@@ -123,13 +125,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Add space filter change handler
   spaceFilter.addEventListener('change', () => {
-    const filteredEvents = filterEventsBySpace(spaceFilter.value);
-
-    // Remove all existing events
-    calendar.removeAllEvents();
-
-    // Add filtered events
-    calendar.addEventSource(filteredEvents);
+    // Refetch events which will apply the filter
+    calendar.refetchEvents();
   });
 
   // Handle window resize for responsive view changes
