@@ -23,9 +23,9 @@ async function renderNavigation() {
             <a href="/calendar.html" class="nav-link">Calendar</a>
 
             ${user ? `
-              <a href="/booking-form.html" class="nav-link">Book</a>
+              <a href="/booking-form.html" class="nav-link">Space Booking</a>
               <a href="/dashboard.html" class="nav-link">My Bookings</a>
-              ${isAdmin ? '<a href="/admin.html" class="nav-link">Admin</a>' : ''}
+              ${isAdmin ? '<a href="/admin.html" class="nav-link">Admin Panel</a>' : ''}
               <div style="display: flex; align-items: center; gap: var(--space-4); margin-left: var(--space-4); padding-left: var(--space-4); border-left: 1px solid var(--color-border);" class="nav-user">
                 <div style="display: flex; align-items: center; gap: var(--space-2);">
                   <div style="width: 2rem; height: 2rem; background: var(--color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.875rem; font-weight: 600;">
@@ -57,9 +57,9 @@ async function renderNavigation() {
         <div id="mobileMenu" style="display: none; flex-direction: column; gap: var(--space-2); padding-top: var(--space-4); border-top: 1px solid var(--color-border); margin-top: var(--space-4);">
           <a href="/calendar.html" class="nav-link" style="padding: var(--space-2) 0;">Calendar</a>
           ${user ? `
-            <a href="/booking-form.html" class="nav-link" style="padding: var(--space-2) 0;">Book</a>
+            <a href="/booking-form.html" class="nav-link" style="padding: var(--space-2) 0;">Space Booking</a>
             <a href="/dashboard.html" class="nav-link" style="padding: var(--space-2) 0;">My Bookings</a>
-            ${isAdmin ? '<a href="/admin.html" class="nav-link" style="padding: var(--space-2) 0;">Admin</a>' : ''}
+            ${isAdmin ? '<a href="/admin.html" class="nav-link" style="padding: var(--space-2) 0;">Admin Panel</a>' : ''}
             <div style="padding: var(--space-3) 0; border-top: 1px solid var(--color-border); margin-top: var(--space-2);">
               <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-3);">
                 <div style="width: 2rem; height: 2rem; background: var(--color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.875rem; font-weight: 600;">
