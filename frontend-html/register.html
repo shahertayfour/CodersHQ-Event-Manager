@@ -60,13 +60,13 @@
       <div id="message"></div>
 
       <!-- Social Signup Buttons -->
-      <div class="space-y-3 mb-6">
+      <div style="display: flex; flex-direction: column; gap: var(--space-3); margin-bottom: var(--space-5);">
         <button
           id="googleSignupBtn"
           type="button"
-          class="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-gray-700 border-2 border-gray-300 py-3 rounded-lg font-medium transition shadow-sm"
+          class="btn btn-secondary" style="justify-content: center; width: 100%;"
         >
-          <svg class="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
             <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
@@ -78,64 +78,64 @@
         <button
           id="githubSignupBtn"
           type="button"
-          class="w-full flex items-center justify-center gap-3 bg-gray-900 hover:bg-gray-800 text-white py-3 rounded-lg font-medium transition shadow-sm"
+          class="btn" style="background: var(--color-primary); color: white; justify-content: center; width: 100%;"
         >
-          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
           </svg>
           Sign up with GitHub
         </button>
       </div>
 
-      <div class="divider text-gray-500 text-sm">Or continue with email</div>
+      <div class="divider" style="font-size: 0.875rem; color: var(--color-text-tertiary);">Or continue with email</div>
 
-      <form id="registerForm" class="space-y-4">
+      <form id="registerForm" style="display: flex; flex-direction: column; gap: var(--space-4);">
         <!-- Personal Information -->
-        <div class="grid md:grid-cols-2 gap-4">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4);">
           <div>
-            <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">
-              First Name <span class="text-red-500">*</span>
+            <label for="firstName" class="label">
+              First Name <span style="color: var(--color-error);">*</span>
             </label>
             <input
               type="text"
               id="firstName"
               required
               placeholder="John"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+              class="input"
             />
           </div>
 
           <div>
-            <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">
-              Last Name <span class="text-red-500">*</span>
+            <label for="lastName" class="label">
+              Last Name <span style="color: var(--color-error);">*</span>
             </label>
             <input
               type="text"
               id="lastName"
               required
               placeholder="Doe"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+              class="input"
             />
           </div>
         </div>
 
         <div>
-          <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-            Email Address <span class="text-red-500">*</span>
+          <label for="email" class="label">
+            Email Address <span style="color: var(--color-error);">*</span>
           </label>
           <input
             type="email"
             id="email"
             required
             placeholder="john.doe@example.com"
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+            class="input"
           />
-          <p class="text-xs text-gray-500 mt-1">We'll send a verification email to this address</p>
+          <p style="font-size: 0.75rem; color: var(--color-text-tertiary); margin-top: var(--space-1);">We'll send a verification email to this address</p>
         </div>
 
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
-            Password <span class="text-red-500">*</span>
+          <label for="password" class="label">
+            Password <span style="color: var(--color-error);">*</span>
           </label>
           <input
             type="password"
@@ -143,87 +143,87 @@
             required
             minlength="8"
             placeholder="Create a strong password"
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+            class="input"
           />
           <div class="password-strength">
             <div id="passwordStrengthBar" class="password-strength-bar" style="width: 0%; background: #ef4444;"></div>
           </div>
-          <p id="passwordHint" class="text-xs text-gray-500 mt-1">
+          <p id="passwordHint" style="font-size: 0.75rem; color: var(--color-text-tertiary); margin-top: var(--space-1);">
             At least 8 characters with uppercase, lowercase, and numbers
           </p>
         </div>
 
         <!-- Professional Information (Optional) -->
-        <div class="pt-4 border-t border-gray-200">
-          <h3 class="text-sm font-semibold text-gray-700 mb-3">Professional Information (Optional)</h3>
+        <div style="padding-top: var(--space-4); border-top: 1px solid var(--color-border);">
+          <h3 style="font-size: 0.875rem; font-weight: 600; margin-bottom: var(--space-3);">Professional Information (Optional)</h3>
 
-          <div class="space-y-4">
+          <div style="display: flex; flex-direction: column; gap: var(--space-4);">
             <div>
-              <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-2">
+              <label for="phoneNumber" class="label">
                 Phone Number
               </label>
               <input
                 type="tel"
                 id="phoneNumber"
                 placeholder="+971 50 123 4567"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                class="input"
               />
             </div>
 
-            <div class="grid md:grid-cols-2 gap-4">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4);">
               <div>
-                <label for="entity" class="block text-sm font-medium text-gray-700 mb-2">
+                <label for="entity" class="label">
                   Company/Organization
                 </label>
                 <input
                   type="text"
                   id="entity"
                   placeholder="Acme Inc."
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  class="input"
                 />
               </div>
 
               <div>
-                <label for="jobTitle" class="block text-sm font-medium text-gray-700 mb-2">
+                <label for="jobTitle" class="label">
                   Job Title
                 </label>
                 <input
                   type="text"
                   id="jobTitle"
                   placeholder="Software Engineer"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  class="input"
                 />
               </div>
             </div>
           </div>
         </div>
 
-        <div class="flex items-start pt-2">
+        <div style="display: flex; align-items: start; gap: var(--space-2); padding-top: var(--space-2);">
           <input
             type="checkbox"
             id="agreeTerms"
             required
-            class="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            style="margin-top: 0.125rem; cursor: pointer;"
           />
-          <label for="agreeTerms" class="ml-2 text-sm text-gray-600">
-            I agree to the <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">Terms of Service</a>
-            and <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">Privacy Policy</a>
+          <label for="agreeTerms" style="font-size: 0.875rem; color: var(--color-text-secondary); cursor: pointer;">
+            I agree to the <a href="#" style="color: var(--color-accent); text-decoration: none; font-weight: 500;">Terms of Service</a>
+            and <a href="#" style="color: var(--color-accent); text-decoration: none; font-weight: 500;">Privacy Policy</a>
           </label>
         </div>
 
         <button
           type="submit"
           id="submitBtn"
-          class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-medium transition"
+          class="btn btn-primary" style="width: 100%;"
         >
           Create Account
         </button>
       </form>
 
-      <div class="mt-6 text-center">
-        <p class="text-sm text-gray-600">
+      <div style="margin-top: var(--space-5); text-align: center;">
+        <p style="font-size: 0.875rem; color: var(--color-text-secondary);">
           Already have an account?
-          <a href="/login.html" class="text-blue-600 hover:text-blue-700 font-semibold">
+          <a href="/login.html" style="color: var(--color-accent); text-decoration: none; font-weight: 600; margin-left: var(--space-1);">
             Sign In
           </a>
         </p>
