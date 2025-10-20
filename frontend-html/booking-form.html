@@ -155,6 +155,7 @@
                 placeholder="Please input date (dd/MM/yyyy)"
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+              <p id="startDate-error" class="text-xs text-red-600 mt-1 hidden"></p>
               <p class="text-xs text-gray-500 mt-1">Please input date (dd/MM/yyyy)</p>
             </div>
 
@@ -169,21 +170,43 @@
                 placeholder="Please input date (dd/MM/yyyy)"
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+              <p id="endDate-error" class="text-xs text-red-600 mt-1 hidden"></p>
               <p class="text-xs text-gray-500 mt-1">Please input date (dd/MM/yyyy)</p>
             </div>
           </div>
 
-          <div class="mb-4">
-            <label for="time" class="block text-sm font-medium text-gray-700 mb-2">
-              10. Time <span class="text-red-500">*</span>
-            </label>
-            <input
-              type="time"
-              id="time"
-              required
-              placeholder="Enter your answer"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+          <div class="grid md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label for="startTime" class="block text-sm font-medium text-gray-700 mb-2">
+                10. Start Time <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="time"
+                id="startTime"
+                required
+                step="900"
+                placeholder="Enter start time"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+              />
+              <p id="startTime-error" class="text-xs text-red-600 mt-1 hidden"></p>
+              <p class="text-xs text-gray-500 mt-1">Event start time (15-minute intervals)</p>
+            </div>
+
+            <div>
+              <label for="endTime" class="block text-sm font-medium text-gray-700 mb-2">
+                End Time <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="time"
+                id="endTime"
+                required
+                step="900"
+                placeholder="Enter end time"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+              />
+              <p id="endTime-error" class="text-xs text-red-600 mt-1 hidden"></p>
+              <p class="text-xs text-gray-500 mt-1">Event end time (15-minute intervals)</p>
+            </div>
           </div>
 
           <div class="mb-4">
@@ -194,10 +217,13 @@
               type="number"
               id="attendees"
               min="1"
+              max="1000"
               required
-              placeholder="Enter your answer"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter number of attendees"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
             />
+            <p id="attendees-error" class="text-xs text-red-500 mt-1 hidden"></p>
+            <p id="attendees-capacity" class="text-xs text-gray-500 mt-1 hidden"></p>
           </div>
 
           <!-- Seating Arrangement -->
@@ -223,6 +249,7 @@
                 <span class="text-sm text-gray-700">U shape</span>
               </label>
             </div>
+            <p id="seating-error" class="text-xs text-red-600 mt-1 hidden"></p>
           </div>
 
           <div class="mb-4">

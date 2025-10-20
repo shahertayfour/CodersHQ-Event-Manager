@@ -1,6 +1,87 @@
 // Booking form page logic
 let editingBookingId = null;
 
+// Helper function to show inline error
+function showInlineError(fieldId, message) {
+  const errorElement = document.getElementById(`${fieldId}-error`);
+  const inputElement = document.getElementById(fieldId);
+
+  if (errorElement) {
+    errorElement.textContent = message;
+    errorElement.classList.remove('hidden');
+  }
+
+  if (inputElement) {
+    inputElement.classList.add('border-red-500');
+    inputElement.classList.remove('border-gray-300');
+  }
+}
+
+// Helper function to clear inline error
+function clearInlineError(fieldId) {
+  const errorElement = document.getElementById(`${fieldId}-error`);
+  const inputElement = document.getElementById(fieldId);
+
+  if (errorElement) {
+    errorElement.textContent = '';
+    errorElement.classList.add('hidden');
+  }
+
+  if (inputElement) {
+    inputElement.classList.remove('border-red-500');
+    inputElement.classList.add('border-gray-300');
+  }
+}
+
+// Validate date/time combination
+function validateDateTime() {
+  const startDate = document.getElementById('startDate').value;
+  const endDate = document.getElementById('endDate').value;
+  const startTime = document.getElementById('startTime').value;
+  const endTime = document.getElementById('endTime').value;
+
+  let isValid = true;
+
+  // Clear previous errors
+  clearInlineError('startDate');
+  clearInlineError('endDate');
+  clearInlineError('startTime');
+  clearInlineError('endTime');
+
+  // Check if all fields are filled
+  if (!startDate || !endDate || !startTime || !endTime) {
+    return true; // Don't validate until all fields are filled
+  }
+
+  // Create datetime objects
+  const startDateTime = new Date(`${startDate}T${startTime}`);
+  const endDateTime = new Date(`${endDate}T${endTime}`);
+  const now = new Date();
+
+  // Check if start date is in the past
+  if (startDateTime < now) {
+    showInlineError('startDate', 'Start date and time cannot be in the past');
+    showInlineError('startTime', 'Start date and time cannot be in the past');
+    isValid = false;
+  }
+
+  // Check if end is after start
+  if (startDateTime >= endDateTime) {
+    showInlineError('endDate', 'End date/time must be after start date/time');
+    showInlineError('endTime', 'End time must be after start time');
+    isValid = false;
+  }
+
+  // Check minimum duration (at least 15 minutes)
+  const durationMinutes = (endDateTime - startDateTime) / (1000 * 60);
+  if (durationMinutes < 15 && durationMinutes > 0) {
+    showInlineError('endTime', 'Event must be at least 15 minutes long');
+    isValid = false;
+  }
+
+  return isValid;
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   // Require authentication
   if (!await Auth.requireAuth()) return;
@@ -51,9 +132,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     Utils.showError(messageDiv, 'Failed to load spaces. Please refresh the page.');
   }
 
+  // Add real-time validation for date and time fields
+  const startDateInput = document.getElementById('startDate');
+  const endDateInput = document.getElementById('endDate');
+  const startTimeInput = document.getElementById('startTime');
+  const endTimeInput = document.getElementById('endTime');
+
+  // Validate on change for date/time fields
+  [startDateInput, endDateInput, startTimeInput, endTimeInput].forEach(input => {
+    if (input) {
+      input.addEventListener('change', validateDateTime);
+      input.addEventListener('blur', validateDateTime);
+    }
+  });
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     Utils.clearMessages(messageDiv);
+
+    // Clear all inline errors first
+    ['startDate', 'endDate', 'startTime', 'endTime', 'seating'].forEach(clearInlineError);
 
     // Get form data
     const firstName = document.getElementById('firstName').value.trim();
@@ -66,23 +164,44 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Get selected seating arrangement (radio button)
     const seatingRadio = document.querySelector('input[name="seating"]:checked');
     if (!seatingRadio) {
+      const seatingError = document.getElementById('seating-error');
+      if (seatingError) {
+        seatingError.textContent = 'Please select a seating arrangement';
+        seatingError.classList.remove('hidden');
+      }
       Utils.showError(messageDiv, 'Please select a seating arrangement.');
+      // Scroll to seating section
+      document.querySelector('input[name="seating"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
 
-    // Combine date and time for start and end
+    // Get date and time values
     const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
-    const time = document.getElementById('time').value;
+    const startTime = document.getElementById('startTime').value;
+    const endTime = document.getElementById('endTime').value;
 
-    if (!startDate || !endDate || !time) {
-      Utils.showError(messageDiv, 'Please provide start date, end date, and time.');
+    if (!startDate || !endDate || !startTime || !endTime) {
+      Utils.showError(messageDiv, 'Please provide start date, end date, start time, and end time.');
+      // Scroll to first empty field
+      if (!startDate) document.getElementById('startDate')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      else if (!endDate) document.getElementById('endDate')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      else if (!startTime) document.getElementById('startTime')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      else if (!endTime) document.getElementById('endTime')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    // Validate date/time combination
+    if (!validateDateTime()) {
+      Utils.showError(messageDiv, 'Please fix the date and time errors before submitting.');
+      // Scroll to first error
+      document.getElementById('startDate')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
 
     // Create datetime strings
-    const startDateTime = new Date(`${startDate}T${time}`);
-    const endDateTime = new Date(`${endDate}T${time}`);
+    const startDateTime = new Date(`${startDate}T${startTime}`);
+    const endDateTime = new Date(`${endDate}T${endTime}`);
 
     const formData = {
       firstName,
@@ -113,12 +232,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
-    // Validate dates
-    if (startDateTime >= endDateTime) {
-      Utils.showError(messageDiv, 'End date must be after start date.');
-      return;
-    }
-
     Utils.showLoading(submitBtn);
 
     try {
@@ -140,7 +253,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       }, 2000);
     } catch (error) {
       Utils.hideLoading(submitBtn);
-      Utils.showError(messageDiv, error.message || 'Failed to submit booking request. Please try again.');
+
+      // Try to parse error message and show inline errors if possible
+      const errorMsg = error.message || 'Failed to submit booking request. Please try again.';
+      Utils.showError(messageDiv, errorMsg);
+
+      // Scroll to top to show error message
+      messageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   });
 });
@@ -167,11 +286,12 @@ async function loadBookingData(bookingId, messageDiv) {
     if (booking.startDate) {
       const start = new Date(booking.startDate);
       document.getElementById('startDate').value = start.toISOString().split('T')[0];
-      document.getElementById('time').value = start.toTimeString().slice(0, 5);
+      document.getElementById('startTime').value = start.toTimeString().slice(0, 5);
     }
     if (booking.endDate) {
       const end = new Date(booking.endDate);
       document.getElementById('endDate').value = end.toISOString().split('T')[0];
+      document.getElementById('endTime').value = end.toTimeString().slice(0, 5);
     }
 
     // Set checkboxes
