@@ -3,7 +3,10 @@ let allBookings = [];
 let currentFilter = 'ALL';
 
 function closeModal() {
-  document.getElementById('bookingModal').classList.add('hidden');
+  const modal = document.getElementById('bookingModal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
 }
 
 function openBookingDetails(bookingId) {
@@ -17,10 +20,10 @@ function openBookingDetails(bookingId) {
   title.textContent = booking.eventName;
 
   content.innerHTML = `
-    <div class="space-y-3 text-sm">
-      <div class="flex items-center gap-2">
-        <span class="font-semibold">Status:</span>
-        <span class="px-2 py-1 rounded text-xs ${Utils.getStatusColor(booking.status)}">
+    <div style="display: flex; flex-direction: column; gap: var(--space-3); font-size: 0.875rem;">
+      <div style="display: flex; align-items: center; gap: var(--space-2);">
+        <span style="font-weight: 600;">Status:</span>
+        <span class="badge ${Utils.getStatusBadgeClass(booking.status)}">
           ${Utils.formatStatus(booking.status)}
         </span>
       </div>
@@ -28,7 +31,7 @@ function openBookingDetails(bookingId) {
       <div><strong>Start:</strong> ${Utils.formatDateTime(booking.startDate)}</div>
       <div><strong>End:</strong> ${Utils.formatDateTime(booking.endDate)}</div>
       <div><strong>Attendees:</strong> ${booking.attendees}</div>
-      <div><strong>Seating:</strong> ${Utils.formatStatus(booking.seating)}</div>
+      ${booking.seating ? `<div><strong>Seating:</strong> ${Utils.formatStatus(booking.seating)}</div>` : ''}
       <div><strong>Agenda:</strong> ${booking.agenda}</div>
       ${booking.projector ? '<div>✓ Projector</div>' : ''}
       ${booking.whiteboard ? '<div>✓ Whiteboard</div>' : ''}
@@ -37,16 +40,16 @@ function openBookingDetails(bookingId) {
       ${booking.cateringRequired ? '<div>✓ Catering Required</div>' : ''}
       <div><strong>Visibility:</strong> ${Utils.formatStatus(booking.visibility)}</div>
       ${booking.comments ? `<div><strong>Comments:</strong> ${booking.comments}</div>` : ''}
-      ${booking.adminComment ? `<div class="bg-yellow-50 p-3 rounded border-l-4 border-yellow-400"><strong>Admin Note:</strong> ${booking.adminComment}</div>` : ''}
+      ${booking.adminComment ? `<div style="background: #fef3c7; padding: var(--space-3); border-radius: var(--radius-md); border-left: 3px solid #f59e0b;"><strong>Admin Note:</strong> ${booking.adminComment}</div>` : ''}
 
       ${booking.status === 'PENDING' || booking.status === 'EDIT_REQUESTED' ? `
-        <div class="pt-4 border-t flex gap-2">
+        <div style="padding-top: var(--space-4); border-top: 1px solid var(--color-border); display: flex; gap: var(--space-2); flex-wrap: wrap;">
           ${booking.status === 'EDIT_REQUESTED' ? `
-            <a href="/booking-form.html?edit=${booking.id}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded inline-block">
+            <a href="/booking-form.html?edit=${booking.id}" class="btn btn-accent">
               Edit Booking
             </a>
           ` : ''}
-          <button onclick="deleteBooking('${booking.id}')" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+          <button onclick="deleteBooking('${booking.id}')" class="btn" style="background: var(--color-error); color: white;">
             Cancel Booking
           </button>
         </div>
@@ -54,7 +57,7 @@ function openBookingDetails(bookingId) {
     </div>
   `;
 
-  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
 }
 
 async function deleteBooking(bookingId) {

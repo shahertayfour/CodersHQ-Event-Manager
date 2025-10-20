@@ -4,99 +4,110 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CHQ Space Management</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/design-system.css">
 </head>
-<body class="bg-gray-50">
+<body>
   <div id="navigation"></div>
 
-  <main class="max-w-7xl mx-auto px-4 py-12">
+  <main style="min-height: calc(100vh - 5rem);">
     <!-- Hero Section -->
-    <section class="text-center py-20">
-      <h1 class="text-5xl font-bold mb-4 text-gray-900">
-        Welcome to CHQ Space Management
-      </h1>
-      <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-        Book and manage spaces at Coders HQ. Choose from our co-working space,
-        lecture room, or meeting room for your next event.
-      </p>
-      <div class="flex gap-4 justify-center">
-        <a href="/booking-form.html" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-lg">
-          Book a Space
-        </a>
-        <a href="/calendar.html" class="bg-gray-200 hover:bg-gray-300 text-gray-900 px-6 py-3 rounded-lg text-lg">
-          View Calendar
-        </a>
+    <section style="text-align: center; padding: var(--space-12) var(--space-4);">
+      <div style="max-width: 48rem; margin: 0 auto;">
+        <h1 style="font-size: 3rem; font-weight: 700; margin-bottom: var(--space-4); letter-spacing: -0.03em; line-height: 1.1;">
+          Space Management
+        </h1>
+        <p style="font-size: 1.125rem; color: var(--color-text-secondary); margin-bottom: var(--space-8); line-height: 1.6;">
+          Book and manage spaces at Coders HQ
+        </p>
+        <div style="display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap;">
+          <a href="/booking-form.html" class="btn btn-primary" style="padding: var(--space-4) var(--space-6); font-size: 1rem;">
+            Book a Space
+          </a>
+          <a href="/calendar.html" class="btn btn-secondary" style="padding: var(--space-4) var(--space-6); font-size: 1rem;">
+            View Calendar
+          </a>
+        </div>
       </div>
     </section>
 
     <!-- Spaces Section -->
-    <section class="py-12">
-      <h2 class="text-3xl font-bold text-center mb-8 text-gray-900">Our Spaces</h2>
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="bg-white p-6 rounded-lg shadow">
-          <h3 class="text-xl font-bold mb-2">Co-working Space</h3>
-          <p class="text-gray-600 mb-4">Capacity: 20 people</p>
-          <p class="text-sm text-gray-500">
-            2 tables with 10 seats each - Perfect for collaborative work and team meetings.
-          </p>
-        </div>
+    <section style="padding: var(--space-12) var(--space-4);">
+      <div class="container">
+        <h2 style="text-align: center; margin-bottom: var(--space-8);">Available Spaces</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-6);">
+          <div class="card">
+            <h3 style="margin-bottom: var(--space-2);">Co-working Space</h3>
+            <p style="color: var(--color-text-secondary); font-size: 0.875rem; margin-bottom: var(--space-4);">
+              Capacity: 20 people
+            </p>
+            <p style="color: var(--color-text-tertiary); font-size: 0.875rem; line-height: 1.5;">
+              2 tables with 10 seats each - Perfect for collaborative work and team meetings.
+            </p>
+          </div>
 
-        <div class="bg-white p-6 rounded-lg shadow">
-          <h3 class="text-xl font-bold mb-2">Lecture Room</h3>
-          <p class="text-gray-600 mb-4">Capacity: 40 people</p>
-          <p class="text-sm text-gray-500">
-            Ideal for talks, training sessions, workshops, and larger gatherings.
-          </p>
-        </div>
+          <div class="card">
+            <h3 style="margin-bottom: var(--space-2);">Lecture Room</h3>
+            <p style="color: var(--color-text-secondary); font-size: 0.875rem; margin-bottom: var(--space-4);">
+              Capacity: 40 people
+            </p>
+            <p style="color: var(--color-text-tertiary); font-size: 0.875rem; line-height: 1.5;">
+              Ideal for talks, training sessions, workshops, and larger gatherings.
+            </p>
+          </div>
 
-        <div class="bg-white p-6 rounded-lg shadow">
-          <h3 class="text-xl font-bold mb-2">Meeting Room</h3>
-          <p class="text-gray-600 mb-4">Capacity: 10 people</p>
-          <p class="text-sm text-gray-500">
-            Perfect for small group meetings, mentoring sessions, and focused discussions.
-          </p>
+          <div class="card">
+            <h3 style="margin-bottom: var(--space-2);">Meeting Room</h3>
+            <p style="color: var(--color-text-secondary); font-size: 0.875rem; margin-bottom: var(--space-4);">
+              Capacity: 10 people
+            </p>
+            <p style="color: var(--color-text-tertiary); font-size: 0.875rem; line-height: 1.5;">
+              Perfect for small group meetings, mentoring sessions, and focused discussions.
+            </p>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- How it Works -->
-    <section class="py-12">
-      <h2 class="text-3xl font-bold text-center mb-8 text-gray-900">How It Works</h2>
-      <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-        <div class="text-center">
-          <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
-            1
+    <section style="padding: var(--space-12) var(--space-4); background: var(--color-bg);">
+      <div class="container" style="max-width: 56rem;">
+        <h2 style="text-align: center; margin-bottom: var(--space-8);">How It Works</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-8);">
+          <div style="text-align: center;">
+            <div style="width: 3rem; height: 3rem; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-4); font-size: 1.25rem; font-weight: 600;">
+              1
+            </div>
+            <h3 style="margin-bottom: var(--space-2); font-size: 1rem;">Submit Request</h3>
+            <p style="font-size: 0.875rem; color: var(--color-text-secondary); line-height: 1.5;">
+              Fill out the booking form with your event details
+            </p>
           </div>
-          <h3 class="font-semibold mb-2 text-gray-900">Submit Request</h3>
-          <p class="text-sm text-gray-600">
-            Fill out the booking form with your event details
-          </p>
-        </div>
-        <div class="text-center">
-          <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
-            2
+          <div style="text-align: center;">
+            <div style="width: 3rem; height: 3rem; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-4); font-size: 1.25rem; font-weight: 600;">
+              2
+            </div>
+            <h3 style="margin-bottom: var(--space-2); font-size: 1rem;">Admin Review</h3>
+            <p style="font-size: 0.875rem; color: var(--color-text-secondary); line-height: 1.5;">
+              Our team reviews your request within 1 working day
+            </p>
           </div>
-          <h3 class="font-semibold mb-2 text-gray-900">Admin Review</h3>
-          <p class="text-sm text-gray-600">
-            Our team reviews your request and responds within 24-48 hours
-          </p>
-        </div>
-        <div class="text-center">
-          <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
-            3
+          <div style="text-align: center;">
+            <div style="width: 3rem; height: 3rem; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-4); font-size: 1.25rem; font-weight: 600;">
+              3
+            </div>
+            <h3 style="margin-bottom: var(--space-2); font-size: 1rem;">Get Confirmed</h3>
+            <p style="font-size: 0.875rem; color: var(--color-text-secondary); line-height: 1.5;">
+              Receive confirmation and access details for your event
+            </p>
           </div>
-          <h3 class="font-semibold mb-2 text-gray-900">Get Confirmed</h3>
-          <p class="text-sm text-gray-600">
-            Receive confirmation and access details for your event
-          </p>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="border-t py-8 mt-20">
-    <div class="max-w-7xl mx-auto px-4 text-center text-gray-600">
-      <p>&copy; 2025 Coders HQ. All rights reserved.</p>
+  <footer style="border-top: 1px solid var(--color-border); padding: var(--space-6) var(--space-4); background: var(--color-bg);">
+    <div class="container" style="text-align: center;">
+      <p style="font-size: 0.875rem; color: var(--color-text-tertiary);">&copy; 2025 Coders HQ. All rights reserved.</p>
     </div>
   </footer>
 

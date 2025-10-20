@@ -10,7 +10,10 @@ const SPACE_COLORS = {
 };
 
 function closeModal() {
-  document.getElementById('eventModal').classList.add('hidden');
+  const modal = document.getElementById('eventModal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
 }
 
 function openModal(event) {
@@ -30,7 +33,7 @@ function openModal(event) {
     ${booking.entity ? `<div><strong>Organization:</strong> ${booking.entity}</div>` : ''}
   `;
 
-  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
 }
 
 function filterEventsBySpace(spaceName) {
