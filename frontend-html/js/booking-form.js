@@ -56,12 +56,15 @@ function validateDateTime() {
   // Create datetime objects
   const startDateTime = new Date(`${startDate}T${startTime}`);
   const endDateTime = new Date(`${endDate}T${endTime}`);
-  const now = new Date();
 
-  // Check if start date is in the past
-  if (startDateTime < now) {
-    showInlineError('startDate', 'Start date and time cannot be in the past');
-    showInlineError('startTime', 'Start date and time cannot be in the past');
+  // Check if start DATE is in the past (not time)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const startDateOnly = new Date(startDate);
+  startDateOnly.setHours(0, 0, 0, 0);
+
+  if (startDateOnly < today) {
+    showInlineError('startDate', 'Start date cannot be in the past');
     isValid = false;
   }
 
@@ -245,7 +248,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       } else {
         // Create new booking
         await API.post(ENDPOINTS.BOOKINGS, formData);
-        Utils.showSuccess(messageDiv, 'Booking request submitted successfully! A confirmation email will be sent within 3-7 working days.');
+        Utils.showSuccess(messageDiv, 'Booking request submitted successfully! A confirmation email will be sent within 1 working day.');
       }
 
       setTimeout(() => {

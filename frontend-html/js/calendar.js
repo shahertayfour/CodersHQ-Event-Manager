@@ -1,5 +1,6 @@
 // Calendar page logic
 let calendar;
+let allEvents = []; // Store all events for filtering
 
 // Space colors
 const SPACE_COLORS = {
@@ -32,25 +33,40 @@ function openModal(event) {
   modal.classList.remove('hidden');
 }
 
+function filterEventsBySpace(spaceName) {
+  if (!spaceName) {
+    // Show all events
+    return allEvents;
+  }
+  // Filter events by space name
+  return allEvents.filter(event => event.extendedProps.spaceName === spaceName);
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   const calendarEl = document.getElementById('calendar');
   const messageDiv = document.getElementById('message');
+  const spaceFilter = document.getElementById('spaceFilter');
 
   // Initialize calendar
   calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
+    initialView: 'timeGridWeek',
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
       right: 'dayGridMonth,timeGridWeek,timeGridDay'
     },
+    slotMinTime: '06:00:00',
+    slotMaxTime: '22:00:00',
+    slotDuration: '00:30:00',
+    nowIndicator: true,
+    allDaySlot: false,
     events: async (fetchInfo, successCallback, failureCallback) => {
       try {
         // Fetch approved bookings from calendar endpoint
         const bookings = await API.get('/calendar');
         console.log('Fetched bookings:', bookings);
 
-        const events = bookings.map(booking => {
+        allEvents = bookings.map(booking => {
           const event = {
             id: booking.id,
             title: booking.title,
@@ -68,8 +84,18 @@ document.addEventListener('DOMContentLoaded', async () => {
           return event;
         });
 
-        console.log('Final events:', events);
-        successCallback(events);
+        // Populate space filter dropdown with unique space names
+        const uniqueSpaces = [...new Set(bookings.map(b => b.spaceName))];
+        uniqueSpaces.forEach(spaceName => {
+          const option = document.createElement('option');
+          option.value = spaceName;
+          option.textContent = spaceName;
+          spaceFilter.appendChild(option);
+        });
+
+        console.log('Final events:', allEvents);
+        const filteredEvents = filterEventsBySpace(spaceFilter.value);
+        successCallback(filteredEvents);
       } catch (error) {
         console.error('Calendar error:', error);
         Utils.showError(messageDiv, `Failed to load calendar events: ${error.message || 'Unknown error'}`);
@@ -83,4 +109,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   calendar.render();
+
+  // Add space filter change handler
+  spaceFilter.addEventListener('change', () => {
+    const filteredEvents = filterEventsBySpace(spaceFilter.value);
+
+    // Remove all existing events
+    calendar.removeAllEvents();
+
+    // Add filtered events
+    calendar.addEventSource(filteredEvents);
+  });
 });
