@@ -2,85 +2,59 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Create Account - CHQ Space Management</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/design-system.css">
   <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
   <style>
     .auth-container {
       min-height: 100vh;
-      padding: 3rem 1rem;
+      padding: var(--space-8) var(--space-4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .divider {
       display: flex;
       align-items: center;
       text-align: center;
-      margin: 1.5rem 0;
+      margin: var(--space-5) 0;
     }
     .divider::before,
     .divider::after {
       content: '';
       flex: 1;
-      border-bottom: 1px solid #e5e7eb;
+      border-bottom: 1px solid var(--color-border);
     }
     .divider:not(:empty)::before {
-      margin-right: 1rem;
+      margin-right: var(--space-4);
     }
     .divider:not(:empty)::after {
-      margin-left: 1rem;
-    }
-    .social-btn {
-      transition: all 0.2s;
-    }
-    .social-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      margin-left: var(--space-4);
     }
     .password-strength {
       height: 4px;
-      background: #e5e7eb;
-      border-radius: 2px;
-      margin-top: 0.5rem;
+      background: var(--color-bg-tertiary);
+      border-radius: var(--radius-sm);
+      margin-top: var(--space-2);
       overflow: hidden;
     }
     .password-strength-bar {
       height: 100%;
-      transition: all 0.3s;
-      border-radius: 2px;
-    }
-    .step-indicator {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 2rem;
-    }
-    .step {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #e5e7eb;
-      margin: 0 4px;
-      transition: all 0.3s;
-    }
-    .step.active {
-      background: #3b82f6;
-      width: 24px;
-      border-radius: 4px;
+      transition: all var(--transition-base);
+      border-radius: var(--radius-sm);
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100">
+<body>
   <div id="navigation"></div>
 
   <main class="auth-container">
-    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-2xl w-full mx-auto">
-      <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-2">Join CodersHQ</h1>
-        <p class="text-gray-600">Create your account to start booking spaces</p>
-      </div>
-
-      <div class="step-indicator">
-        <div class="step active"></div>
-        <div class="step"></div>
+    <div class="card" style="max-width: 42rem; width: 100%;">
+      <div style="text-align: center; margin-bottom: var(--space-6);">
+        <h1 style="margin-bottom: var(--space-2);">Create Account</h1>
+        <p style="color: var(--color-text-secondary); font-size: 0.875rem;">Start booking spaces at CodersHQ</p>
       </div>
 
       <div id="message"></div>
