@@ -502,24 +502,8 @@ export class EmailService {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="color-scheme" content="light only">
-        <meta name="supported-color-schemes" content="light">
         <title>${title}</title>
         ${preheader ? `<style type="text/css">.preheader { display: none !important; visibility: hidden; opacity: 0; color: transparent; height: 0; width: 0; }</style>` : ''}
-        <style type="text/css">
-          /* Force light mode for logo container */
-          .logo-container {
-            background-color: #ffffff !important;
-            background: #ffffff !important;
-          }
-          /* Dark mode overrides */
-          @media (prefers-color-scheme: dark) {
-            .logo-container {
-              background-color: #ffffff !important;
-              background: #ffffff !important;
-            }
-          }
-        </style>
       </head>
       <body style="margin: 0; padding: 0; background: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
         ${preheader ? `<div class="preheader">${preheader}</div>` : ''}
@@ -531,15 +515,9 @@ export class EmailService {
 
                 <!-- Header -->
                 <tr>
-                  <td style="padding: 40px; background-color: #f8fafc !important; border-bottom: 3px solid #e2e8f0; text-align: center;">
-                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin: 0 auto;">
-                      <tr>
-                        <td class="logo-container" style="background-color: #ffffff !important; background: #ffffff !important; padding: 24px 40px; border-radius: 16px; border: 2px solid #e2e8f0;">
-                          <img src="https://dashboard.codershq.ae/images/coders-hq-logo.png" alt="Coders HQ" style="height: 90px; width: auto; max-width: 100%; display: block; margin: 0;" border="0">
-                        </td>
-                      </tr>
-                    </table>
-                    <p style="margin: 24px 0 0 0; font-size: 15px; color: #1e293b !important; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;">
+                  <td style="padding: 40px; background: #e0f2fe; text-align: center;">
+                    <img src="https://dashboard.codershq.ae/images/coders-hq-logo.png" alt="Coders HQ" style="height: 80px; width: auto; display: block; margin: 0 auto;">
+                    <p style="margin: 16px 0 0 0; font-size: 14px; color: #0c4a6e; font-weight: 600; letter-spacing: 0.1em;">
                       SPACE MANAGEMENT
                     </p>
                   </td>
