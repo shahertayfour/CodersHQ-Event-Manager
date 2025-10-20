@@ -98,4 +98,17 @@ export class AuthController {
   async auth0Callback(@Req() req: any) {
     return this.authService.handleAuth0Callback(req);
   }
+
+  // Embedded Auth0 Authentication
+  @Public()
+  @Post('auth0/register')
+  async auth0Register(@Body() registerDto: RegisterDto) {
+    return this.authService.auth0Register(registerDto);
+  }
+
+  @Public()
+  @Post('auth0/login')
+  async auth0Login(@Body() loginDto: LoginDto) {
+    return this.authService.auth0Login(loginDto);
+  }
 }

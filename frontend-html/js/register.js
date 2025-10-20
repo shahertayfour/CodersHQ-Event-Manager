@@ -61,14 +61,57 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Auth0 Signup Button
+  // Auth0 Signup Button - Create user in Auth0 via backend
   auth0SignupBtn.addEventListener('click', async () => {
+    Utils.clearMessages(messageDiv);
+
+    // Validate required fields
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+
+    if (!email || !password || !firstName || !lastName) {
+      Utils.showError(messageDiv, 'Please fill in all required fields (Name, Email, Password).');
+      return;
+    }
+
+    // Validate password strength
+    const { strength } = checkPasswordStrength(password);
+    if (strength < 50) {
+      Utils.showError(messageDiv, 'Please use a stronger password before signing up with Auth0.');
+      return;
+    }
+
+    Utils.showLoading(auth0SignupBtn);
+
     try {
-      Utils.showLoading(auth0SignupBtn);
-      await Auth.auth0Signup();
+      // Gather all form data
+      const formData = {
+        email,
+        password,
+        firstName,
+        lastName,
+        phoneNumber: document.getElementById('phoneNumber').value.trim(),
+        entity: document.getElementById('entity').value.trim(),
+        jobTitle: document.getElementById('jobTitle').value.trim()
+      };
+
+      // Create user in Auth0 and local database via backend
+      const response = await API.post('/auth/auth0/register', formData);
+
+      // Store token and user data
+      Auth.setToken(response.access_token);
+      Auth.setUser(response.user);
+
+      Utils.showSuccess(messageDiv, 'Account created successfully with Auth0! Redirecting...');
+
+      setTimeout(() => {
+        window.location.href = '/dashboard.html';
+      }, 1000);
     } catch (error) {
       Utils.hideLoading(auth0SignupBtn);
-      Utils.showError(messageDiv, 'Auth0 signup failed. Please try again.');
+      Utils.showError(messageDiv, error.message || 'Auth0 signup failed. Please try again.');
       console.error('Auth0 signup error:', error);
     }
   });

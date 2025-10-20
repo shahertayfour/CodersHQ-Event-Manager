@@ -6,6 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { EmailService } from '../email/email.service';
 import { RegisterDto } from './dto/register.dto';
@@ -23,6 +24,7 @@ export class AuthService {
     private prisma: PrismaService,
     private jwtService: JwtService,
     private emailService: EmailService,
+    private configService: ConfigService,
   ) {}
 
   async register(registerDto: RegisterDto) {
@@ -337,5 +339,185 @@ export class AuthService {
   async handleAuth0Callback(req: any) {
     // This is a placeholder for additional Auth0 callback handling if needed
     return { message: 'Auth0 callback handled' };
+  }
+
+  // Embedded Auth0 Authentication Methods
+  async auth0Register(registerDto: any) {
+    try {
+      const { email, password, firstName, lastName, phoneNumber, entity, jobTitle } = registerDto;
+
+      console.log('Creating Auth0 user:', email);
+
+      // Check if user already exists in Auth0
+      const auth0Domain = this.configService.get<string>('AUTH0_DOMAIN');
+      const managementToken = await this.getAuth0ManagementToken();
+
+      // Check local database first
+      const existingUser = await this.prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (existingUser) {
+        throw new ConflictException('Email already registered');
+      }
+
+      // Create user in Auth0
+      const auth0Response = await fetch(`https://${auth0Domain}/api/v2/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${managementToken}`
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          connection: 'Username-Password-Authentication',
+          email_verified: false,
+          given_name: firstName,
+          family_name: lastName,
+          name: `${firstName} ${lastName}`,
+          user_metadata: {
+            phoneNumber,
+            entity,
+            jobTitle
+          }
+        })
+      });
+
+      if (!auth0Response.ok) {
+        const error = await auth0Response.json();
+        console.error('Auth0 user creation error:', error);
+        throw new BadRequestException(error.message || 'Failed to create Auth0 user');
+      }
+
+      const auth0User = await auth0Response.json();
+      console.log('Auth0 user created:', auth0User.user_id);
+
+      // Create user in local database
+      const user = await this.prisma.user.create({
+        data: {
+          email,
+          firstName,
+          lastName,
+          name: `${firstName} ${lastName}`,
+          phoneNumber,
+          entity,
+          jobTitle,
+          googleId: auth0User.user_id, // Store Auth0 ID
+          emailVerified: false,
+        },
+      });
+
+      console.log('Local user created:', user.id);
+
+      // Generate JWT token
+      return this.generateTokens(user);
+    } catch (error) {
+      console.error('Error in auth0Register:', error);
+      throw error;
+    }
+  }
+
+  async auth0Login(loginDto: any) {
+    try {
+      const { email, password } = loginDto;
+
+      console.log('Auth0 login attempt:', email);
+
+      // Authenticate with Auth0
+      const auth0Domain = this.configService.get<string>('AUTH0_DOMAIN');
+      const clientId = this.configService.get<string>('AUTH0_CLIENT_ID');
+      const clientSecret = this.configService.get<string>('AUTH0_CLIENT_SECRET');
+
+      const auth0Response = await fetch(`https://${auth0Domain}/oauth/token`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          grant_type: 'password',
+          username: email,
+          password,
+          client_id: clientId,
+          client_secret: clientSecret,
+          audience: `https://${auth0Domain}/api/v2/`,
+          scope: 'openid profile email'
+        })
+      });
+
+      if (!auth0Response.ok) {
+        const error = await auth0Response.json();
+        console.error('Auth0 login error:', error);
+        throw new UnauthorizedException('Invalid credentials');
+      }
+
+      const auth0TokenData = await auth0Response.json();
+
+      // Get user info from Auth0
+      const userInfoResponse = await fetch(`https://${auth0Domain}/userinfo`, {
+        headers: {
+          'Authorization': `Bearer ${auth0TokenData.access_token}`
+        }
+      });
+
+      const auth0User = await userInfoResponse.json();
+      console.log('Auth0 user info:', auth0User.sub);
+
+      // Find or create user in local database
+      let user = await this.prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (!user) {
+        // Create user if doesn't exist
+        const firstName = auth0User.given_name || auth0User.name?.split(' ')[0] || email.split('@')[0];
+        const lastName = auth0User.family_name || auth0User.name?.split(' ')[1] || '';
+
+        user = await this.prisma.user.create({
+          data: {
+            email,
+            firstName,
+            lastName,
+            name: `${firstName} ${lastName}`.trim(),
+            googleId: auth0User.sub,
+            emailVerified: auth0User.email_verified || false,
+          },
+        });
+      }
+
+      console.log('Login successful for user:', user.id);
+
+      // Generate JWT token
+      return this.generateTokens(user);
+    } catch (error) {
+      console.error('Error in auth0Login:', error);
+      throw error;
+    }
+  }
+
+  private async getAuth0ManagementToken(): Promise<string> {
+    const auth0Domain = this.configService.get<string>('AUTH0_DOMAIN');
+    const clientId = this.configService.get<string>('AUTH0_CLIENT_ID');
+    const clientSecret = this.configService.get<string>('AUTH0_CLIENT_SECRET');
+
+    const response = await fetch(`https://${auth0Domain}/oauth/token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        grant_type: 'client_credentials',
+        client_id: clientId,
+        client_secret: clientSecret,
+        audience: `https://${auth0Domain}/api/v2/`
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to get Auth0 management token');
+    }
+
+    const data = await response.json();
+    return data.access_token;
   }
 }
