@@ -92,6 +92,7 @@ const Utils = {
 
   // Format status text
   formatStatus(status) {
-    return status.replace('_', ' ');
+    if (!status) return 'N/A';
+    return String(status).replace(/_/g, ' ');
   }
 };
