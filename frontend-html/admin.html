@@ -33,6 +33,44 @@
       background: var(--color-bg-tertiary);
       color: var(--color-text-secondary);
     }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      padding: var(--space-4);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.show {
+      display: flex !important;
+    }
+    .modal-overlay.hide {
+      display: none !important;
+    }
+    .modal-card {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      max-width: 48rem;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: modalFadeIn 0.2s ease-out;
+    }
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
   </style>
 </head>
 <body style="background: var(--color-bg-tertiary); min-height: 100vh;">
@@ -96,10 +134,10 @@
   </main>
 
   <!-- Booking Details Modal -->
-  <div id="bookingModal" style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center; z-index: 50; padding: var(--space-4);">
-    <div class="card" style="max-width: 48rem; width: 100%; max-height: 90vh; overflow-y: auto;">
+  <div id="bookingModal" class="modal-overlay hide" onclick="if(event.target === this) closeModal();">
+    <div class="modal-card" onclick="event.stopPropagation();">
       <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--space-4);">
-        <h2 id="modalTitle" style="font-size: 1.5rem; font-weight: 700; color: var(--color-text-primary);"></h2>
+        <h2 id="modalTitle" style="font-size: 1.5rem; font-weight: 700; color: var(--color-text-primary); margin: 0;"></h2>
         <button onclick="closeModal()" class="btn-ghost" style="color: var(--color-text-tertiary); padding: var(--space-2);">
           <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -110,11 +148,11 @@
     </div>
   </div>
 
-  <script src="/js/config.js?v=3"></script>
-  <script src="/js/auth.js?v=3"></script>
-  <script src="/js/api.js?v=3"></script>
-  <script src="/js/utils.js?v=3"></script>
-  <script src="/js/navigation.js?v=3"></script>
-  <script src="/js/admin.js?v=3"></script>
+  <script src="/js/config.js?v=5"></script>
+  <script src="/js/auth.js?v=5"></script>
+  <script src="/js/api.js?v=5"></script>
+  <script src="/js/utils.js?v=5"></script>
+  <script src="/js/navigation.js?v=5"></script>
+  <script src="/js/admin.js?v=5"></script>
 </body>
 </html>

@@ -2,8 +2,19 @@
 let allBookings = [];
 let currentFilter = 'ALL';
 
+function showModal() {
+  console.log('Showing modal...');
+  const modal = document.getElementById('bookingModal');
+  modal.classList.remove('hide');
+  modal.classList.add('show');
+  console.log('Modal classes:', modal.className);
+}
+
 function closeModal() {
-  document.getElementById('bookingModal').style.display = 'none';
+  console.log('Closing modal...');
+  const modal = document.getElementById('bookingModal');
+  modal.classList.remove('show');
+  modal.classList.add('hide');
 }
 
 function openBookingDetails(bookingId) {
@@ -122,8 +133,8 @@ function openBookingDetails(bookingId) {
   `;
 
   console.log('About to show modal...');
-  modal.style.display = 'flex';
-  console.log('Modal display set to flex. Modal should be visible now.');
+  showModal();
+  console.log('Modal should be visible now.');
 }
 
 async function updateBookingStatus(bookingId, status) {
@@ -264,9 +275,10 @@ async function loadBookings() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // Require admin authentication
-  if (!Auth.requireAdmin()) return;
+  const isAdmin = await Auth.requireAdmin();
+  if (!isAdmin) return;
 
   loadBookings();
 });
