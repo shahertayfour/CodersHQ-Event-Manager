@@ -47,19 +47,27 @@ document.addEventListener('DOMContentLoaded', async () => {
   const messageDiv = document.getElementById('message');
   const spaceFilter = document.getElementById('spaceFilter');
 
+  // Check if mobile device
+  const isMobile = window.innerWidth < 768;
+
   // Initialize calendar
   calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'timeGridWeek',
+    initialView: isMobile ? 'timeGridDay' : 'timeGridWeek',
     headerToolbar: {
-      left: 'prev,next today',
+      left: isMobile ? 'prev,next' : 'prev,next today',
       center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      right: isMobile ? 'today dayGridMonth' : 'dayGridMonth,timeGridWeek,timeGridDay'
     },
+    // Mobile-friendly title format
+    titleFormat: isMobile ? { month: 'short', day: 'numeric' } : { year: 'numeric', month: 'long' },
     slotMinTime: '06:00:00',
     slotMaxTime: '22:00:00',
     slotDuration: '00:30:00',
     nowIndicator: true,
     allDaySlot: false,
+    // Better mobile height handling
+    contentHeight: isMobile ? 'auto' : 'auto',
+    expandRows: true,
     events: async (fetchInfo, successCallback, failureCallback) => {
       try {
         // Fetch approved bookings from calendar endpoint
@@ -119,5 +127,29 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Add filtered events
     calendar.addEventSource(filteredEvents);
+  });
+
+  // Handle window resize for responsive view changes
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      const nowMobile = window.innerWidth < 768;
+      const currentView = calendar.view.type;
+
+      // Switch to appropriate view based on screen size
+      if (nowMobile && (currentView === 'timeGridWeek')) {
+        calendar.changeView('timeGridDay');
+      } else if (!nowMobile && currentView === 'timeGridDay') {
+        calendar.changeView('timeGridWeek');
+      }
+
+      // Update header toolbar
+      calendar.setOption('headerToolbar', {
+        left: nowMobile ? 'prev,next' : 'prev,next today',
+        center: 'title',
+        right: nowMobile ? 'today dayGridMonth' : 'dayGridMonth,timeGridWeek,timeGridDay'
+      });
+    }, 250);
   });
 });
