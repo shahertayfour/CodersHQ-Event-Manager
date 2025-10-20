@@ -1,8 +1,7 @@
 // Register page logic
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
   // Check if user is authenticated
-  const isAuth0Logged = await Auth.isAuth0Authenticated();
-  if (isAuth0Logged || Auth.isAuthenticated()) {
+  if (Auth.isAuthenticated()) {
     window.location.href = '/dashboard.html';
     return;
   }
@@ -10,7 +9,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const form = document.getElementById('registerForm');
   const messageDiv = document.getElementById('message');
   const submitBtn = document.getElementById('submitBtn');
-  const auth0SignupBtn = document.getElementById('auth0SignupBtn');
   const passwordInput = document.getElementById('password');
   const passwordStrengthBar = document.getElementById('passwordStrengthBar');
   const passwordHint = document.getElementById('passwordHint');
