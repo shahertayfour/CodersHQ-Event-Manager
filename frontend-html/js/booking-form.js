@@ -3,7 +3,7 @@ let editingBookingId = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
   // Require authentication
-  if (!Auth.requireAuth()) return;
+  if (!await Auth.requireAuth()) return;
 
   const form = document.getElementById('bookingForm');
   const messageDiv = document.getElementById('message');
@@ -19,6 +19,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     const title = document.querySelector('h1');
     if (title) title.textContent = 'Edit Booking';
     submitBtn.textContent = 'Update Booking';
+  }
+
+  // Pre-fill user data if available
+  const user = Auth.getUser();
+  if (user) {
+    if (user.firstName) document.getElementById('firstName').value = user.firstName;
+    if (user.lastName) document.getElementById('lastName').value = user.lastName;
+    if (user.email) document.getElementById('email').value = user.email;
+    if (user.phoneNumber) document.getElementById('phoneNumber').value = user.phoneNumber;
+    if (user.entity) document.getElementById('entity').value = user.entity;
+    if (user.jobTitle) document.getElementById('jobTitle').value = user.jobTitle;
   }
 
   // Load available spaces
@@ -44,22 +55,48 @@ document.addEventListener('DOMContentLoaded', async () => {
     e.preventDefault();
     Utils.clearMessages(messageDiv);
 
-    // Get current user info
-    const user = Auth.getUser();
+    // Get form data
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phoneNumber = document.getElementById('phoneNumber').value.trim();
+    const entity = document.getElementById('entity').value.trim();
+    const jobTitle = document.getElementById('jobTitle').value.trim();
+
+    // Get selected seating arrangement (radio button)
+    const seatingRadio = document.querySelector('input[name="seating"]:checked');
+    if (!seatingRadio) {
+      Utils.showError(messageDiv, 'Please select a seating arrangement.');
+      return;
+    }
+
+    // Combine date and time for start and end
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const time = document.getElementById('time').value;
+
+    if (!startDate || !endDate || !time) {
+      Utils.showError(messageDiv, 'Please provide start date, end date, and time.');
+      return;
+    }
+
+    // Create datetime strings
+    const startDateTime = new Date(`${startDate}T${time}`);
+    const endDateTime = new Date(`${endDate}T${time}`);
 
     const formData = {
-      firstName: user.firstName || '',
-      lastName: user.lastName || '',
-      email: user.email || '',
-      phoneNumber: user.phoneNumber || '',
-      entity: user.entity || '',
-      jobTitle: user.jobTitle || '',
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      entity,
+      jobTitle,
       eventName: document.getElementById('eventName').value,
       spaceId: document.getElementById('spaceId').value,
-      startDate: new Date(document.getElementById('startDate').value).toISOString(),
-      endDate: new Date(document.getElementById('endDate').value).toISOString(),
+      startDate: startDateTime.toISOString(),
+      endDate: endDateTime.toISOString(),
       attendees: parseInt(document.getElementById('attendees').value),
-      seating: document.getElementById('seating').value,
+      seating: seatingRadio.value,
       agenda: document.getElementById('agenda').value,
       valet: document.getElementById('valet')?.checked || false,
       catering: document.getElementById('catering')?.checked || false,
@@ -71,13 +108,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     // Validate required fields
-    if (!formData.firstName || !formData.lastName || !formData.phoneNumber || !formData.entity || !formData.jobTitle) {
-      Utils.showError(messageDiv, 'Please complete your profile first. Contact information is required for bookings.');
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.phoneNumber || !formData.entity || !formData.jobTitle) {
+      Utils.showError(messageDiv, 'Please fill in all required personal information fields.');
       return;
     }
 
     // Validate dates
-    if (new Date(formData.startDate) >= new Date(formData.endDate)) {
+    if (startDateTime >= endDateTime) {
       Utils.showError(messageDiv, 'End date must be after start date.');
       return;
     }
@@ -95,7 +132,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       } else {
         // Create new booking
         await API.post(ENDPOINTS.BOOKINGS, formData);
-        Utils.showSuccess(messageDiv, 'Booking request submitted successfully! Redirecting to dashboard...');
+        Utils.showSuccess(messageDiv, 'Booking request submitted successfully! A confirmation email will be sent within 3-7 working days.');
       }
 
       setTimeout(() => {
@@ -116,19 +153,25 @@ async function loadBookingData(bookingId, messageDiv) {
     document.getElementById('eventName').value = booking.eventName || '';
     document.getElementById('spaceId').value = booking.spaceId || '';
     document.getElementById('attendees').value = booking.attendees || '';
-    document.getElementById('seating').value = booking.seating || 'THEATRE';
     document.getElementById('agenda').value = booking.agenda || '';
     document.getElementById('visibility').value = booking.visibility || 'PUBLIC';
     document.getElementById('comments').value = booking.comments || '';
 
-    // Set date values (convert from ISO to datetime-local format)
+    // Set seating radio button
+    if (booking.seating) {
+      const seatingRadio = document.querySelector(`input[name="seating"][value="${booking.seating}"]`);
+      if (seatingRadio) seatingRadio.checked = true;
+    }
+
+    // Set date and time values
     if (booking.startDate) {
       const start = new Date(booking.startDate);
-      document.getElementById('startDate').value = start.toISOString().slice(0, 16);
+      document.getElementById('startDate').value = start.toISOString().split('T')[0];
+      document.getElementById('time').value = start.toTimeString().slice(0, 5);
     }
     if (booking.endDate) {
       const end = new Date(booking.endDate);
-      document.getElementById('endDate').value = end.toISOString().slice(0, 16);
+      document.getElementById('endDate').value = end.toISOString().split('T')[0];
     }
 
     // Set checkboxes
