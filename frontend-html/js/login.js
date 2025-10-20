@@ -1,5 +1,5 @@
 // Login page logic
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
   // Check if user is authenticated
   if (Auth.isAuthenticated()) {
     window.location.href = '/dashboard.html';
@@ -9,47 +9,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const form = document.getElementById('loginForm');
   const messageDiv = document.getElementById('message');
   const submitBtn = document.getElementById('submitBtn');
-  const auth0LoginBtn = document.getElementById('auth0LoginBtn');
 
-  // Auth0 Embedded Login - Authenticate with Auth0 via backend
-  auth0LoginBtn.addEventListener('click', async () => {
-    Utils.clearMessages(messageDiv);
-
-    // Get email and password from form
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    if (!email || !password) {
-      Utils.showError(messageDiv, 'Please enter your email and password to login with Auth0.');
-      return;
-    }
-
-    Utils.showLoading(auth0LoginBtn);
-
-    try {
-      // Authenticate with Auth0 via backend
-      const response = await API.post('/auth/auth0/login', {
-        email,
-        password
-      });
-
-      // Store token and user data
-      Auth.setToken(response.access_token);
-      Auth.setUser(response.user);
-
-      Utils.showSuccess(messageDiv, 'Login successful! Redirecting...');
-
-      setTimeout(() => {
-        window.location.href = '/dashboard.html';
-      }, 1000);
-    } catch (error) {
-      Utils.hideLoading(auth0LoginBtn);
-      Utils.showError(messageDiv, error.message || 'Auth0 login failed. Please check your credentials.');
-      console.error('Auth0 login error:', error);
-    }
-  });
-
-  // Traditional Email/Password Login (Local Database)
+  // Email/Password Login
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     Utils.clearMessages(messageDiv);
