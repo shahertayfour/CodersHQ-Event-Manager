@@ -516,7 +516,7 @@ export class EmailService {
                 <!-- Header -->
                 <tr>
                   <td style="padding: 32px 40px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); text-align: center;">
-                    <h1 style="margin: 0; font-size: 32px; font-weight: 700; color: white; letter-spacing: -0.02em;">
+                    <h1 style="margin: 0; font-size: 32px; font-weight: 700; color: #ffffff; letter-spacing: -0.02em;">
                       CHQ
                     </h1>
                     <p style="margin: 8px 0 0 0; font-size: 14px; color: #94a3b8; font-weight: 500; letter-spacing: 0.05em;">
