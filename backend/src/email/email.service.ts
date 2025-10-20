@@ -516,10 +516,8 @@ export class EmailService {
                 <!-- Header -->
                 <tr>
                   <td style="padding: 32px 40px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); text-align: center;">
-                    <h1 style="margin: 0; font-size: 32px; font-weight: 700; color: #ffffff; letter-spacing: -0.02em;">
-                      CHQ
-                    </h1>
-                    <p style="margin: 8px 0 0 0; font-size: 14px; color: #94a3b8; font-weight: 500; letter-spacing: 0.05em;">
+                    <img src="https://avatars.githubusercontent.com/u/46369882?s=200&v=4" alt="Coders HQ" style="height: 60px; width: auto; margin: 0 auto; display: block;">
+                    <p style="margin: 16px 0 0 0; font-size: 14px; color: #94a3b8; font-weight: 500; letter-spacing: 0.05em;">
                       SPACE MANAGEMENT
                     </p>
                   </td>
