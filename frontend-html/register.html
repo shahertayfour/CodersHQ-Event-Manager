@@ -3,129 +3,248 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign Up - CHQ Space Management</title>
+  <title>Create Account - CHQ Space Management</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
+  <style>
+    .auth-container {
+      min-height: 100vh;
+      padding: 3rem 1rem;
+    }
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 1.5rem 0;
+    }
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .divider:not(:empty)::before {
+      margin-right: 1rem;
+    }
+    .divider:not(:empty)::after {
+      margin-left: 1rem;
+    }
+    .social-btn {
+      transition: all 0.2s;
+    }
+    .social-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .password-strength {
+      height: 4px;
+      background: #e5e7eb;
+      border-radius: 2px;
+      margin-top: 0.5rem;
+      overflow: hidden;
+    }
+    .password-strength-bar {
+      height: 100%;
+      transition: all 0.3s;
+      border-radius: 2px;
+    }
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    .step {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #e5e7eb;
+      margin: 0 4px;
+      transition: all 0.3s;
+    }
+    .step.active {
+      background: #3b82f6;
+      width: 24px;
+      border-radius: 4px;
+    }
+  </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100">
   <div id="navigation"></div>
 
-  <main class="max-w-2xl mx-auto px-4 py-12">
-    <div class="bg-white p-8 rounded-lg shadow">
-      <h1 class="text-3xl font-bold mb-6 text-gray-900">Create Account</h1>
+  <main class="auth-container">
+    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-2xl w-full mx-auto">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Join CodersHQ</h1>
+        <p class="text-gray-600">Create your account to start booking spaces</p>
+      </div>
+
+      <div class="step-indicator">
+        <div class="step active"></div>
+        <div class="step"></div>
+      </div>
 
       <div id="message"></div>
 
-      <form id="registerForm">
-        <div class="grid md:grid-cols-2 gap-4 mb-4">
+      <button
+        id="auth0SignupBtn"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium mb-4 social-btn flex items-center justify-center gap-2"
+      >
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+        </svg>
+        Sign Up with Auth0
+      </button>
+
+      <div class="divider text-sm text-gray-500">or sign up with email</div>
+
+      <form id="registerForm" class="space-y-4">
+        <!-- Personal Information -->
+        <div class="grid md:grid-cols-2 gap-4">
           <div>
             <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">
-              First Name *
+              First Name <span class="text-red-500">*</span>
             </label>
             <input
               type="text"
               id="firstName"
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="John"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
             />
           </div>
 
           <div>
             <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">
-              Last Name *
+              Last Name <span class="text-red-500">*</span>
             </label>
             <input
               type="text"
               id="lastName"
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Doe"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
             />
           </div>
         </div>
 
-        <div class="mb-4">
+        <div>
           <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-            Email *
+            Email Address <span class="text-red-500">*</span>
           </label>
           <input
             type="email"
             id="email"
             required
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="john.doe@example.com"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
           />
+          <p class="text-xs text-gray-500 mt-1">We'll send a verification email to this address</p>
         </div>
 
-        <div class="mb-4">
+        <div>
           <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
-            Password *
+            Password <span class="text-red-500">*</span>
           </label>
           <input
             type="password"
             id="password"
             required
             minlength="8"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Create a strong password"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
           />
-          <p class="text-xs text-gray-500 mt-1">Minimum 8 characters</p>
+          <div class="password-strength">
+            <div id="passwordStrengthBar" class="password-strength-bar" style="width: 0%; background: #ef4444;"></div>
+          </div>
+          <p id="passwordHint" class="text-xs text-gray-500 mt-1">
+            At least 8 characters with uppercase, lowercase, and numbers
+          </p>
         </div>
 
-        <div class="mb-4">
-          <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-2">
-            Phone Number
-          </label>
-          <input
-            type="tel"
-            id="phoneNumber"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+        <!-- Professional Information (Optional) -->
+        <div class="pt-4 border-t border-gray-200">
+          <h3 class="text-sm font-semibold text-gray-700 mb-3">Professional Information (Optional)</h3>
+
+          <div class="space-y-4">
+            <div>
+              <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-2">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                id="phoneNumber"
+                placeholder="+971 50 123 4567"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+              />
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <label for="entity" class="block text-sm font-medium text-gray-700 mb-2">
+                  Company/Organization
+                </label>
+                <input
+                  type="text"
+                  id="entity"
+                  placeholder="Acme Inc."
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                />
+              </div>
+
+              <div>
+                <label for="jobTitle" class="block text-sm font-medium text-gray-700 mb-2">
+                  Job Title
+                </label>
+                <input
+                  type="text"
+                  id="jobTitle"
+                  placeholder="Software Engineer"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="mb-4">
-          <label for="entity" class="block text-sm font-medium text-gray-700 mb-2">
-            Entity/Organization
-          </label>
+        <div class="flex items-start pt-2">
           <input
-            type="text"
-            id="entity"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            type="checkbox"
+            id="agreeTerms"
+            required
+            class="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
           />
-        </div>
-
-        <div class="mb-6">
-          <label for="jobTitle" class="block text-sm font-medium text-gray-700 mb-2">
-            Job Title
+          <label for="agreeTerms" class="ml-2 text-sm text-gray-600">
+            I agree to the <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">Terms of Service</a>
+            and <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">Privacy Policy</a>
           </label>
-          <input
-            type="text"
-            id="jobTitle"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
         </div>
 
         <button
           type="submit"
           id="submitBtn"
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium"
+          class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-medium transition"
         >
-          Sign Up
+          Create Account
         </button>
       </form>
 
       <div class="mt-6 text-center">
         <p class="text-sm text-gray-600">
           Already have an account?
-          <a href="/login.html" class="text-blue-600 hover:text-blue-700 font-medium">
-            Login
+          <a href="/login.html" class="text-blue-600 hover:text-blue-700 font-semibold">
+            Sign In
           </a>
         </p>
       </div>
     </div>
   </main>
 
-  <script src="/js/config.js?v=2"></script>
-  <script src="/js/auth.js"></script>
+  <script src="/js/config.js?v=3"></script>
+  <script src="/js/auth0-config.js?v=3"></script>
+  <script src="/js/auth.js?v=3"></script>
   <script src="/js/api.js"></script>
   <script src="/js/utils.js"></script>
   <script src="/js/navigation.js"></script>
-  <script src="/js/register.js"></script>
+  <script src="/js/register.js?v=3"></script>
 </body>
 </html>

@@ -85,4 +85,17 @@ export class AuthController {
   async verifyEmail(@Body() verifyEmailDto: VerifyEmailDto) {
     return this.authService.verifyEmail(verifyEmailDto);
   }
+
+  // Auth0 Integration Endpoints
+  @Public()
+  @Post('auth0/sync')
+  async syncAuth0User(@Body() body: { auth0User: any }, @Req() req: any) {
+    return this.authService.syncAuth0User(body.auth0User, req.headers.authorization);
+  }
+
+  @Public()
+  @Get('auth0/callback')
+  async auth0Callback(@Req() req: any) {
+    return this.authService.handleAuth0Callback(req);
+  }
 }

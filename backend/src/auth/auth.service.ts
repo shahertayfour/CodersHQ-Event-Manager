@@ -274,4 +274,68 @@ export class AuthService {
 
     return { message: 'Email verified successfully' };
   }
+
+  // Auth0 Integration Methods
+  async syncAuth0User(auth0User: any, authHeader?: string) {
+    try {
+      console.log('Syncing Auth0 user:', auth0User);
+
+      const email = auth0User.email;
+      if (!email) {
+        throw new BadRequestException('Email not found in Auth0 user profile');
+      }
+
+      // Extract user information
+      const firstName =
+        auth0User.given_name ||
+        auth0User.name?.split(' ')[0] ||
+        email.split('@')[0];
+      const lastName = auth0User.family_name || auth0User.name?.split(' ')[1] || '';
+
+      // Check if user exists
+      let user = await this.prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (user) {
+        // Update existing user
+        user = await this.prisma.user.update({
+          where: { email },
+          data: {
+            firstName,
+            lastName,
+            name: `${firstName} ${lastName}`.trim(),
+            emailVerified: auth0User.email_verified || false,
+            // Store Auth0 sub if not already stored
+            googleId: user.googleId || auth0User.sub,
+          },
+        });
+      } else {
+        // Create new user
+        user = await this.prisma.user.create({
+          data: {
+            email,
+            firstName,
+            lastName,
+            name: `${firstName} ${lastName}`.trim(),
+            emailVerified: auth0User.email_verified || false,
+            googleId: auth0User.sub,
+          },
+        });
+      }
+
+      console.log('User synced:', user.email);
+
+      // Generate JWT token for backend API
+      return this.generateTokens(user);
+    } catch (error) {
+      console.error('Error syncing Auth0 user:', error);
+      throw error;
+    }
+  }
+
+  async handleAuth0Callback(req: any) {
+    // This is a placeholder for additional Auth0 callback handling if needed
+    return { message: 'Auth0 callback handled' };
+  }
 }

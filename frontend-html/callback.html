@@ -16,7 +16,9 @@
     </div>
   </div>
 
-  <script src="js/auth0-config.js"></script>
+  <script src="js/config.js?v=3"></script>
+  <script src="js/auth0-config.js?v=3"></script>
+  <script src="js/api.js"></script>
   <script>
     (async () => {
       try {
@@ -32,11 +34,45 @@
         const user = await auth0Client.getUser();
         const token = await auth0Client.getTokenSilently();
 
-        // Store user and token
+        // Store Auth0 data locally
         localStorage.setItem('auth0_user', JSON.stringify(user));
         localStorage.setItem('auth0_token', token);
 
         console.log('Logged in user:', user);
+
+        // Sync user with backend
+        try {
+          const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:4000/api'
+            : 'https://api-dashboard.codershq.ae/api';
+
+          const syncResponse = await fetch(`${apiUrl}/auth/auth0/sync`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ auth0User: user })
+          });
+
+          if (syncResponse.ok) {
+            const backendData = await syncResponse.json();
+            console.log('User synced with backend:', backendData);
+
+            // Store backend token and user data
+            if (backendData.access_token) {
+              localStorage.setItem('auth_token', backendData.access_token);
+            }
+            if (backendData.user) {
+              localStorage.setItem('user_data', JSON.stringify(backendData.user));
+            }
+          } else {
+            console.warn('Backend sync failed, continuing with Auth0 only');
+          }
+        } catch (syncError) {
+          console.error('Error syncing with backend:', syncError);
+          // Continue anyway, user is authenticated with Auth0
+        }
 
         // Redirect to dashboard or intended page
         const targetUrl = result.appState?.targetUrl || '/dashboard.html';
